@@ -123,4 +123,12 @@ Log는 winston, winston-daily-rotate-file 라이브러리를 사용해 구성했
 
 ## ✨License
 - 본 템플릿의 소유권은 소프트스퀘어드에 있습니다. 본 자료에 대한 상업적 이용 및 무단 복제, 배포 및 변경을 원칙적으로 금지하며 이를 위반할 때에는 형사처벌을 받을 수 있습니다.
-# coupang_eats_test_server_shaun
+# coupang_eats_test_server_shaun #개발일지
+
+## 2021-07-31 진행상황
+- RDS 데이터베이스 구축 -risingTest
+- EC2 인스턴스 구축
+- test/product 서브도메인 설정
+- SSL 인증 적용 (메인 도메인, 서브 도메인 각각 적용)
+- test API 작성 - 서버 정상 작동 확인을 위함
+
