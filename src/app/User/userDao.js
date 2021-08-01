@@ -6,13 +6,12 @@ module.exports = {
   // selectUserAccount
 };
 
-// test
 async function selectTestData(connection) {
-  const Query = `
-  select * from User
-  `;
-  const [Row] = await connection.query(Query);
-  return Row;
+    const selectQuery = `
+    select * from User
+                `;
+    const [Rows] = await connection.query(selectQuery);
+    return Rows;
 }
 
 

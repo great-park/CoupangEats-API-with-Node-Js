@@ -12,7 +12,8 @@ const {emit} = require("nodemon");
  * [GET] /app/test
  */
 exports.getTest = async function (req, res) {
-    const rdsTest = await userProvider.rdsTest()
+
+    const rdsTest = await userProvider.rdsTest();
     return res.send(response(baseResponse.SUCCESS, rdsTest));
 };
 

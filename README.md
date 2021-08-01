@@ -132,3 +132,9 @@ Log는 winston, winston-daily-rotate-file 라이브러리를 사용해 구성했
 - SSL 인증 적용 (메인 도메인, 서브 도메인 각각 적용)
 - test API 작성 - 서버 정상 작동 확인을 위함
 
+## 2021-08-01 진행상황
+- Coupang Eats ERD 설계 완료 
+  <aquerytool 링크>
+  URL : https://aquerytool.com/aquerymain/index/?rurl=92722557-f92e-4887-88f6-0eb583001f02&
+  Password : 1t27pd
+- DB 연결 이슈 해결
