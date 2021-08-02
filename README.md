@@ -138,4 +138,6 @@ Log는 winston, winston-daily-rotate-file 라이브러리를 사용해 구성했
   URL : https://aquerytool.com/aquerymain/index/?rurl=92722557-f92e-4887-88f6-0eb583001f02&
   Password : 1t27pd
 - DB 연결 이슈 해결
-- 예시 데이터 작업 진행중
+- 예시 데이터 작업 진행중 
+  3495개의 행정구역 데이터 삽입 실패 / datagrip에서 최대 500개의 row만 허용
+  425개의 서울시 데이터만을 삽입하기로 함

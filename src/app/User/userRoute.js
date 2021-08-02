@@ -5,12 +5,11 @@ module.exports = function(app){
     // 0. 테스트 API
     app.get('/app/test', user.getTest)
 
-    // // 유저 생성 (회원가입) API
-    // app.post('/app/users', user.postUsers);
-    //
-    // //TODO: After 로그인 인증 방법 (JWT)
-    // // 로그인 하기 API (JWT 생성)
-    // app.post('/app/logins', user.login);
+    // 1. 유저 생성 (회원가입) API
+    app.post('/app/users', user.postUsers);
+
+    // 2. 로그인 하기 API (JWT 생성)
+    app.post('/app/logins', user.login);
 
 
 };
