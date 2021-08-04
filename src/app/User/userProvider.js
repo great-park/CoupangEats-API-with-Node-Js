@@ -25,7 +25,7 @@ exports.phoneNumberCheck = async function (phoneNumber) {
 
 //이메일 체크
 
-exports.userEmailCheck = async function (userEmail) {
+exports.emailCheck = async function (userEmail) {
   const connection = await pool.getConnection(async (conn) => conn);
   const emailCheckResult = await userDao.selectUseremail(connection, userEmail);
   connection.release();
@@ -54,4 +54,23 @@ exports.accountCheck = async function (userEmail) {
 
   return userAccountResult;
 };
+
+// 홈화면 골라먹는 맛집
+exports.retrieveRestarurants = async function (userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const restarurantsResult = [
+      await userDao.selectUserDefaultAddress(connection, userId),
+    await userDao.selectEvents(connection),
+    await userDao.selectCategory(connection),
+    await userDao.selectFranchises(connection, userId),
+    await userDao.selectRecentlyOpenings(connection, userId),
+    await userDao.selectfamous(connection, userId)
+  ];
+  connection.release();
+  return restarurantsResult;
+};
+
+
+
 

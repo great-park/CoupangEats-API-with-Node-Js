@@ -51,7 +51,7 @@ exports.createUser = async function (userEmail, password, phoneNumber, userName)
 exports.postSignIn = async function (userEmail, password) {
     try {
         // 이메일 여부 확인
-        const userEmailRows = await userProvider.userEmailCheck(userEmail);
+        const userEmailRows = await userProvider.emailCheck(userEmail);
         if (userEmailRows.length < 1) return errResponse(baseResponse.SIGNIN_USEREMAIL_WRONG);
         const selectuserEmail = userEmailRows[0].userEmail
         // 비밀번호 확인

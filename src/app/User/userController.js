@@ -92,6 +92,38 @@ exports.login = async function (req, res) {
 };
 
 
+/**
+ * API No. 3
+ * API Name : 홈화면 조회 API
+ * [GET] /app/users/:userId/restarurants
+ */
+exports.home = async function (req, res) {
+    /**
+     * Path variable: userId
+     */
+    const userId = req.params.userId;
+
+    const restarurantList = await userProvider.retrieveRestarurants(userId);
+    return res.send(response(baseResponse.SUCCESS, restarurantList));
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // /** JWT 토큰 검증 API
 //  * [GET] /app/auto-login
 //  */

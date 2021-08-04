@@ -11,6 +11,9 @@ module.exports = function(app){
     // 2. 로그인 하기 API (JWT 생성)
     app.post('/app/logins', user.login);
 
+    // 3. 홈화면 API
+    app.get('/app/users/:userId/restarurants', user.home)
+
 
 };
 
