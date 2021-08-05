@@ -26,7 +26,7 @@ module.exports = function(app){
     // 7. 식당 메뉴창 API
     app.get('/app/users/:userId/restaurants/:restId', user.menu)
 
-    // 8. 식당 정보 조회 API
+    // 8. 식당 자세한 정보 조회 API
     app.get('/app/restaurants/:restId/informations', user.restInfo)
 };
 
