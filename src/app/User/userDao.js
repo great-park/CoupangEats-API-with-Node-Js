@@ -9,11 +9,10 @@ module.exports = {
     selectEvents,
     selectCategory,
     selectFranchises,
-    selectRecentlyOpenings,
-    selectfamous,
+    selectRecentlyOpen, selectMRecentlyOpen, selectDRecentlyOpen, selectDMRecentlyOpen, selectCRecentlyOpen, selectCMRecentlyOpen, selectCDRecentlyOpen, selectCDMRecentlyOpen,
+    selectFamous, selectMFamous, selectDFamous, selectDMFamous, selectCFamous, selectCMFamous, selectCDFamous, selectCDMFamous,
     selectMFranchises, selectDFranchises, selectDMFranchises, selectCFranchises, selectCMFranchises, selectCDFranchises, selectCDMFranchises,
-    selectRestInfo, selectRestImageUrl, selectReview, selectMenu,
-    selectRestDetailInfo
+    selectRestInfo, selectRestImageUrl, selectReview, selectMenu
 };
 
 async function selectTestData(connection) {
@@ -174,9 +173,9 @@ group by restId;
     return selectFranchisesRow;
 }
 
-// 홈화면 새로 들어왔어요!
-async function selectRecentlyOpenings(connection, userId) {
-    const selectRecentlyOpeningsQuery = `
+// 홈화면 새로 들어왔어요! (=1번)
+async function selectRecentlyOpen(connection, userId) {
+    const selectRecentlyOpenQuery = `
         select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon,
                case when deliveryFee = 0
                         then '무료'
@@ -199,18 +198,18 @@ AS distance
         where (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1
         group by restId;
         `;
-    const [selectRecentlyOpeningsRow] = await connection.query(
-        selectRecentlyOpeningsQuery, userId
+    const [selectRecentlyOpenRow] = await connection.query(
+        selectRecentlyOpenQuery, userId
     );
 
-    return selectRecentlyOpeningsRow;
+    return selectRecentlyOpenRow;
 }
 
 
 
-// 홈화면 골라먹는 맛집!
-async function selectfamous(connection, userId) {
-    const selectfamousQuery = `
+// 홈화면 골라먹는 맛집(=1번)
+async function selectFamous(connection, userId) {
+    const selectFamousQuery = `
         select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon,
                case when deliveryFee = 0
                         then '무료'
@@ -232,14 +231,238 @@ AS distance
                  inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
         group by restId;
         `;
-    const [selectfamousRow] = await connection.query(
-        selectfamousQuery, userId
+    const [selectFamousRow] = await connection.query(
+        selectFamousQuery, userId
     );
 
-    return selectfamousRow;
+    return selectFamousRow;
+}
+// 골라먹는 맛집 2번
+async function selectMFamous(connection, userId, minimunAmount) {
+    const selectMFamousQuery = `
+    select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon,
+           case when deliveryFee = 0
+                    then '무료'
+                else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
+           , star, count(reviewId), distance
+from Restaurant
+inner join Review R on Restaurant.restId = R.restId
+inner join (SELECT userId, userAddressId,restId,
+       #거리계산
+       CONCAT(
+               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
+                                 cos(radians(restHardness) - radians(userHardness)) +
+                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+           , 'km')
+AS distance
+FROM Restaurant, UserAddress
+where userId = ?
+ORDER BY distance) DistanceInfo
+inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
+where minimunAmount < ?
+group by restId;
+        `;
+    const [selectMFamousRow] = await connection.query(
+        selectMFamousQuery, [userId, minimunAmount]
+    );
+
+    return selectMFamousRow;
+}
+
+// 골라먹는 맛집 3번
+async function selectDFamous(connection, userId, deliveryFee) {
+    const selectDFamousQuery = `
+    select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon,
+           case when deliveryFee = 0
+                    then '무료'
+                else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
+         , star, count(reviewId), distance
+from Restaurant
+inner join Review R on Restaurant.restId = R.restId
+inner join (SELECT userId, userAddressId,restId,
+       #거리계산
+       CONCAT(
+               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
+                                 cos(radians(restHardness) - radians(userHardness)) +
+                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+           , 'km')
+AS distance
+FROM Restaurant, UserAddress
+where userId = ?
+ORDER BY distance) DistanceInfo
+inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
+where Restaurant.deliveryFee < ?
+group by restId;
+        `;
+    const [selectDFamousRow] = await connection.query(
+        selectDFamousQuery, [userId, deliveryFee]
+    );
+
+    return selectDFamousRow;
+}
+
+// 골라먹는 맛집 4번
+async function selectDMFamous(connection, userId, deliveryFee, minimunAmount) {
+    const selectDMFamousQuery = `
+    select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon,
+           case when deliveryFee = 0
+                    then '무료'
+                else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
+         , star, count(reviewId), distance
+from Restaurant
+inner join Review R on Restaurant.restId = R.restId
+inner join (SELECT userId, userAddressId,restId,
+       #거리계산
+       CONCAT(
+               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
+                                 cos(radians(restHardness) - radians(userHardness)) +
+                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+           , 'km')
+AS distance
+FROM Restaurant, UserAddress
+where userId = ?
+ORDER BY distance) DistanceInfo
+inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
+where Restaurant.deliveryFee < ?  and minimunAmount < ?
+group by restId;
+        `;
+    const [selectDMFamousRow] = await connection.query(
+        selectDMFamousQuery, [userId, deliveryFee, minimunAmount]
+    );
+
+    return selectDMFamousRow;
+}
+
+// 골라먹는 맛집 5번
+async function selectCFamous(connection, userId) {
+    const selectCFamousQuery = `
+    select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon,
+           case when deliveryFee = 0
+                    then '무료'
+                else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
+           , star, count(reviewId), distance
+from Restaurant
+inner join Review R on Restaurant.restId = R.restId
+inner join (SELECT userId, userAddressId,restId,
+       #거리계산
+       CONCAT(
+               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
+                                 cos(radians(restHardness) - radians(userHardness)) +
+                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+           , 'km')
+AS distance
+FROM Restaurant, UserAddress
+where userId = ?
+ORDER BY distance) DistanceInfo
+inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
+where Cheetah = 'Y'
+group by restId;
+        `;
+    const [selectCFamousRow] = await connection.query(
+        selectCFamousQuery, userId
+    );
+
+    return selectCFamousRow;
+}
+
+// 골라먹는 맛집 6번
+async function selectCMFamous(connection, userId, minimunAmount) {
+    const selectCMFamousQuery = `
+    select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon,
+           case when deliveryFee = 0
+                    then '무료'
+                else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
+           , star, count(reviewId), distance
+from Restaurant
+inner join Review R on Restaurant.restId = R.restId
+inner join (SELECT userId, userAddressId,restId,
+       #거리계산
+       CONCAT(
+               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
+                                 cos(radians(restHardness) - radians(userHardness)) +
+                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+           , 'km')
+AS distance
+FROM Restaurant, UserAddress
+where userId = ?
+ORDER BY distance) DistanceInfo
+inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
+where minimunAmount < ? and Cheetah = 'Y'
+group by restId;
+        `;
+    const [selectCMFamousRow] = await connection.query(
+        selectCMFamousQuery, [userId, minimunAmount]
+    );
+
+    return selectCMFamousRow;
+}
+
+// 골라먹는 맛집 7번
+async function selectCDFamous(connection, userId, deliveryFee) {
+    const selectCDFamousQuery = `
+    select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon,
+           case when deliveryFee = 0
+                    then '무료'
+                else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
+         , star, count(reviewId), distance
+from Restaurant
+inner join Review R on Restaurant.restId = R.restId
+inner join (SELECT userId, userAddressId,restId,
+       #거리계산
+       CONCAT(
+               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
+                                 cos(radians(restHardness) - radians(userHardness)) +
+                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+           , 'km')
+AS distance
+FROM Restaurant, UserAddress
+where userId = ?
+ORDER BY distance) DistanceInfo
+inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
+where Restaurant.deliveryFee < ? and Cheetah = 'Y'
+group by restId;
+        `;
+    const [selectCDFamousRow] = await connection.query(
+        selectCDFamousQuery, [userId, deliveryFee]
+    );
+
+    return selectCDFamousRow;
+}
+
+// 골라먹는 맛집 8번
+async function selectCDMFamous(connection, userId, deliveryFee, minimunAmount) {
+    const selectCDMFamousQuery = `
+    select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon,
+           case when deliveryFee = 0
+                    then '무료'
+                else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
+         , star, count(reviewId), distance
+from Restaurant
+inner join Review R on Restaurant.restId = R.restId
+inner join (SELECT userId, userAddressId,restId,
+       #거리계산
+       CONCAT(
+               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
+                                 cos(radians(restHardness) - radians(userHardness)) +
+                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+           , 'km')
+AS distance
+FROM Restaurant, UserAddress
+where userId = ?
+ORDER BY distance) DistanceInfo
+inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
+where Restaurant.deliveryFee < ? and minimunAmount < ? and Cheetah = 'Y'
+group by restId;
+        `;
+    const [selectCDMFamousRow] = await connection.query(
+        selectCDMFamousQuery, [userId, deliveryFee, minimunAmount]
+    );
+
+    return selectCDMFamousRow;
 }
 
 
+//*****************************************************************//
 // 인기프랜차이즈 2번
 async function selectMFranchises(connection, userId, minimunAmount) {
     const selectMFranchisesQuery = `
@@ -463,6 +686,230 @@ group by restId;
 
     return selectCDMFranchisesRow;
 }
+//***************************************************//
+//새로 들어왔어요 2번
+async function selectMRecentlyOpen(connection, userId, minimunAmount) {
+    const selectMRecentlyOpenQuery = `
+    select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon,
+           case when deliveryFee = 0
+                    then '무료'
+                else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
+           , star, count(reviewId), distance
+from Restaurant
+inner join Review R on Restaurant.restId = R.restId
+inner join (SELECT userId, userAddressId,restId,
+       #거리계산
+       CONCAT(
+               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
+                                 cos(radians(restHardness) - radians(userHardness)) +
+                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+           , 'km')
+AS distance
+FROM Restaurant, UserAddress
+where userId = ?
+ORDER BY distance) DistanceInfo
+inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
+where (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1 and minimunAmount < ?
+group by restId;
+        `;
+    const [selectMRecentlyOpenRow] = await connection.query(
+        selectMRecentlyOpenQuery, [userId, minimunAmount]
+    );
+
+    return selectMRecentlyOpenRow;
+}
+
+// 새로 들어왔어요 3번
+async function selectDRecentlyOpen(connection, userId, deliveryFee) {
+    const selectDRecentlyOpenQuery = `
+    select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon,
+           case when deliveryFee = 0
+                    then '무료'
+                else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
+         , star, count(reviewId), distance
+from Restaurant
+inner join Review R on Restaurant.restId = R.restId
+inner join (SELECT userId, userAddressId,restId,
+       #거리계산
+       CONCAT(
+               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
+                                 cos(radians(restHardness) - radians(userHardness)) +
+                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+           , 'km')
+AS distance
+FROM Restaurant, UserAddress
+where userId = ?
+ORDER BY distance) DistanceInfo
+inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
+where (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1 and Restaurant.deliveryFee < ?
+group by restId;
+        `;
+    const [selectDRecentlyOpenRow] = await connection.query(
+        selectDRecentlyOpenQuery, [userId, deliveryFee]
+    );
+
+    return selectDRecentlyOpenRow;
+}
+
+// 새로 들어왔어요 4번
+async function selectDMRecentlyOpen(connection, userId, deliveryFee, minimunAmount) {
+    const selectDMRecentlyOpenQuery = `
+    select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon,
+           case when deliveryFee = 0
+                    then '무료'
+                else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
+         , star, count(reviewId), distance
+from Restaurant
+inner join Review R on Restaurant.restId = R.restId
+inner join (SELECT userId, userAddressId,restId,
+       #거리계산
+       CONCAT(
+               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
+                                 cos(radians(restHardness) - radians(userHardness)) +
+                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+           , 'km')
+AS distance
+FROM Restaurant, UserAddress
+where userId = ?
+ORDER BY distance) DistanceInfo
+inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
+where (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1 and Restaurant.deliveryFee < ?  and minimunAmount < ?
+group by restId;
+        `;
+    const [selectDMRecentlyOpenRow] = await connection.query(
+        selectDMRecentlyOpenQuery, [userId, deliveryFee, minimunAmount]
+    );
+
+    return selectDMRecentlyOpenRow;
+}
+
+// 새로 들어왔어요 5번
+async function selectCRecentlyOpen(connection, userId) {
+    const selectCRecentlyOpenQuery = `
+    select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon,
+           case when deliveryFee = 0
+                    then '무료'
+                else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
+           , star, count(reviewId), distance
+from Restaurant
+inner join Review R on Restaurant.restId = R.restId
+inner join (SELECT userId, userAddressId,restId,
+       #거리계산
+       CONCAT(
+               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
+                                 cos(radians(restHardness) - radians(userHardness)) +
+                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+           , 'km')
+AS distance
+FROM Restaurant, UserAddress
+where userId = ?
+ORDER BY distance) DistanceInfo
+inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
+where (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1 and Cheetah = 'Y'
+group by restId;
+        `;
+    const [selectCRecentlyOpenRow] = await connection.query(
+        selectCRecentlyOpenQuery, userId
+    );
+
+    return selectCRecentlyOpenRow;
+}
+
+// 새로 들어왔어요 6번
+async function selectCMRecentlyOpen(connection, userId, minimunAmount) {
+    const selectCMRecentlyOpenQuery = `
+    select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon,
+           case when deliveryFee = 0
+                    then '무료'
+                else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
+           , star, count(reviewId), distance
+from Restaurant
+inner join Review R on Restaurant.restId = R.restId
+inner join (SELECT userId, userAddressId,restId,
+       #거리계산
+       CONCAT(
+               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
+                                 cos(radians(restHardness) - radians(userHardness)) +
+                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+           , 'km')
+AS distance
+FROM Restaurant, UserAddress
+where userId = ?
+ORDER BY distance) DistanceInfo
+inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
+where (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1  and minimunAmount < ? and Cheetah = 'Y'
+group by restId;
+        `;
+    const [selectCMRecentlyOpenRow] = await connection.query(
+        selectCMRecentlyOpenQuery, [userId, minimunAmount]
+    );
+
+    return selectCMRecentlyOpenRow;
+}
+
+// 새로 들어왔어요 7번
+async function selectCDRecentlyOpen(connection, userId, deliveryFee) {
+    const selectCDRecentlyOpenQuery = `
+    select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon,
+           case when deliveryFee = 0
+                    then '무료'
+                else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
+         , star, count(reviewId), distance
+from Restaurant
+inner join Review R on Restaurant.restId = R.restId
+inner join (SELECT userId, userAddressId,restId,
+       #거리계산
+       CONCAT(
+               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
+                                 cos(radians(restHardness) - radians(userHardness)) +
+                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+           , 'km')
+AS distance
+FROM Restaurant, UserAddress
+where userId = ?
+ORDER BY distance) DistanceInfo
+inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
+where (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1 and Restaurant.deliveryFee < ? and Cheetah = 'Y'
+group by restId;
+        `;
+    const [selectCDRecentlyOpenRow] = await connection.query(
+        selectCDRecentlyOpenQuery, [userId, deliveryFee]
+    );
+
+    return selectCDRecentlyOpenRow;
+}
+
+// 새로 들어왔어요 8번
+async function selectCDMRecentlyOpen(connection, userId, deliveryFee, minimunAmount) {
+    const selectCDMRecentlyOpenQuery = `
+    select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon,
+           case when deliveryFee = 0
+                    then '무료'
+                else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
+         , star, count(reviewId), distance
+from Restaurant
+inner join Review R on Restaurant.restId = R.restId
+inner join (SELECT userId, userAddressId,restId,
+       #거리계산
+       CONCAT(
+               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
+                                 cos(radians(restHardness) - radians(userHardness)) +
+                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+           , 'km')
+AS distance
+FROM Restaurant, UserAddress
+where userId = ?
+ORDER BY distance) DistanceInfo
+inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
+where (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1  and Restaurant.deliveryFee < ? and minimunAmount < ? and Cheetah = 'Y'
+group by restId;
+        `;
+    const [selectCDMRecentlyOpenRow] = await connection.query(
+        selectCDMRecentlyOpenQuery, [userId, deliveryFee, minimunAmount]
+    );
+
+    return selectCDMRecentlyOpenRow;
+}
 
 
 // // 식당 이미지
@@ -472,7 +919,7 @@ async function selectRestImageUrl(connection, restId) {
         from RestaurantImage where restId = ?;
         `;
     const [selectRestImageUrlRow] = await connection.query(
-        selectRestImageUrlQuery
+        selectRestImageUrlQuery, restId
     );
 
     return selectRestImageUrlRow;
@@ -508,8 +955,9 @@ async function selectRestInfo(connection, userId, restId) {
 // // 식당 당 리뷰
 async function selectReview(connection, restId) {
     const selectReviewQuery = `
-        select restId ,restImageUrl
-        from RestaurantImage where restId = ?;
+        select reviewId, reviewImageUrl, reviewContent, star
+        from Review
+        where restId = ?;
         `;
     const [selectReviewRow] = await connection.query(
         selectReviewQuery, restId
@@ -520,31 +968,14 @@ async function selectReview(connection, restId) {
 // // 식당 당 메뉴
 async function selectMenu(connection, restId) {
     const selectMenuQuery = `
-        select restId ,restImageUrl
-        from RestaurantImage where restId = ?;
+        select menuId, subMenuCategory, menuName, CONCAT(menuPrice,'원'), menuImageUrl, menuInfo
+        from Menu
+        where restId = ?;
         `;
-    const [selectRestImageUrlRow] = await connection.query(
+    const [selectMenuRow] = await connection.query(
         selectMenuQuery, restId
     );
 
     return selectMenuRow;
 }
 
-
-// 식당 정보
-async function selectRestDetailInfo(connection, restId) {
-    const selectRestDetailInfoQuery = `
-        select restName, restPhoneNumber, CONCAT(sidoName,'',sigunguName,'',eupMyeonDongName,'',detailAddress),
-               managerName, registrationNumber, businessName, operationHour, restIntroduction, notice, originInfo, allergyInfo, nutritionInfo
-        from Restaurant
-                 inner join EupMyeonDong EMD on Restaurant.eupMyeonDongId = EMD.eupMyeonDongId
-                 inner join SiGunGu SGG on EMD.siGunGuCode = SGG.sigunguCode
-                 inner join SiDo SD on SGG.sidoId = SD.siDoId
-        where restId = ?;
-        `;
-    const [selectRestDetailInfoRow] = await connection.query(
-        selectRestDetailInfoQuery, restId
-    );
-
-    return selectRestDetailInfoRow;
-}
