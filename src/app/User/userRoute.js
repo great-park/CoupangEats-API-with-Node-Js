@@ -14,8 +14,8 @@ module.exports = function(app){
     // 3. 홈화면 API
     app.get('/app/users/:userId/restarurants', user.home)
 
-    // // 4. 골라먹는 맛집 API
-    // app.get('/app/restaurants/famous', user.famous)
+    // 4. 골라먹는 맛집 API
+    app.get('/app/users/:userId/restaurants/famous', user.famous)
 
     // 5. 인기 프랜차이즈 API
     app.get('/app/users/:userId/restaurants/franchises', user.franchise)

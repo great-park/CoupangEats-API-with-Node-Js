@@ -87,9 +87,7 @@ async function selectUserAccount(connection, userEmail) {
       selectUserAccountQuery,
       userEmail
   );
-  console.log("---Dao selectUserAccount")
-  console.log(selectUserAccountRow)
-  console.log(selectUserAccountRow[0])
+
   return selectUserAccountRow[0];
 }
 
@@ -268,7 +266,7 @@ where categoryId = 25 and (star > 4.5) and minimunAmount < ?
 group by restId;
         `;
     const [selectMFranchisesRow] = await connection.query(
-        selectMFranchisesQuery, userId
+        selectMFranchisesQuery, [userId, minimunAmount]
     );
 
     return selectMFranchisesRow;
@@ -300,7 +298,7 @@ where categoryId = 25 and (star > 4.5) and Restaurant.deliveryFee < ?
 group by restId;
         `;
     const [selectDFranchisesRow] = await connection.query(
-        selectDFranchisesQuery, userId
+        selectDFranchisesQuery, [userId, deliveryFee]
     );
 
     return selectDFranchisesRow;
@@ -332,7 +330,7 @@ where categoryId = 25 and (star > 4.5) and Restaurant.deliveryFee < ?  and minim
 group by restId;
         `;
     const [selectDMFranchisesRow] = await connection.query(
-        selectDMFranchisesQuery, userId
+        selectDMFranchisesQuery, [userId, deliveryFee, minimunAmount]
     );
 
     return selectDMFranchisesRow;
@@ -396,7 +394,7 @@ where categoryId = 25 and (star > 4.5)  and minimunAmount < ? and Cheetah = 'Y'
 group by restId;
         `;
     const [selectCMFranchisesRow] = await connection.query(
-        selectCMFranchisesQuery, userId
+        selectCMFranchisesQuery, [userId, minimunAmount]
     );
 
     return selectCMFranchisesRow;
@@ -428,7 +426,7 @@ where categoryId = 25 and (star > 4.5)  and Restaurant.deliveryFee < ? and Cheet
 group by restId;
         `;
     const [selectCDFranchisesRow] = await connection.query(
-        selectCDFranchisesQuery, userId
+        selectCDFranchisesQuery, [userId, deliveryFee]
     );
 
     return selectCDFranchisesRow;
@@ -460,7 +458,7 @@ where categoryId = 25 and (star > 4.5)  and Restaurant.deliveryFee < ? and minim
 group by restId;
         `;
     const [selectCDMFranchisesRow] = await connection.query(
-        selectCDMFranchisesQuery, userId
+        selectCDMFranchisesQuery, [userId, deliveryFee, minimunAmount]
     );
 
     return selectCDMFranchisesRow;
@@ -502,7 +500,7 @@ async function selectRestInfo(connection, userId, restId) {
         group by R.restId;
         `;
     const [selectRestInfoRow] = await connection.query(
-        selectRestInfoQuery
+        selectRestInfoQuery, [userId, restId]
     );
 
     return selectRestInfoRow;
@@ -514,7 +512,7 @@ async function selectReview(connection, restId) {
         from RestaurantImage where restId = ?;
         `;
     const [selectReviewRow] = await connection.query(
-        selectReviewQuery
+        selectReviewQuery, restId
     );
 
     return selectReviewRow;
@@ -526,7 +524,7 @@ async function selectMenu(connection, restId) {
         from RestaurantImage where restId = ?;
         `;
     const [selectRestImageUrlRow] = await connection.query(
-        selectMenuQuery
+        selectMenuQuery, restId
     );
 
     return selectMenuRow;
@@ -545,7 +543,7 @@ async function selectRestDetailInfo(connection, restId) {
         where restId = ?;
         `;
     const [selectRestDetailInfoRow] = await connection.query(
-        selectRestDetailInfoQuery
+        selectRestDetailInfoQuery, restId
     );
 
     return selectRestDetailInfoRow;

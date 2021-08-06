@@ -80,7 +80,7 @@ exports.retrieveFranchise = async function (userId, deliveryFee, minimunAmount) 
       // 1. C 치타배달 상관 X, D 배달비 상관 X, M 최소주문 상관 X
       const connection = await pool.getConnection(async (conn) => conn);
       const franchiseResult = await userDao.selectFranchises(connection, userId);
-
+      console.log('1번')
       connection.release();
 
       return franchiseResult;
@@ -88,28 +88,28 @@ exports.retrieveFranchise = async function (userId, deliveryFee, minimunAmount) 
       // 2. C 치타배달 상관 X, D 배달비 상관 X, M 최소주문 적용
       const connection = await pool.getConnection(async (conn) => conn);
       const MfranchiseResult = await userDao.selectMFranchises(connection, userId, minimunAmount);
-
+      console.log('2번')
       connection.release();
 
-      return franchiseResult;
+      return MfranchiseResult;
     }
   } else {
     if (!minimunAmount) {
       // 3. C 치타배달 상관 X, D 배달비 적용, M 최소주문 상관 X
       const connection = await pool.getConnection(async (conn) => conn);
       const DfranchiseResult = await userDao.selectDFranchises(connection, userId, deliveryFee);
-
+      console.log('3번')
       connection.release();
 
-      return franchiseResult;
+      return DfranchiseResult;
     } else {
       // 4. C 치타배달 상관 X, D 배달비 적용, M 최소주문 적용
       const connection = await pool.getConnection(async (conn) => conn);
       const DMfranchiseResult = await userDao.selectDMFranchises(connection, userId, deliveryFee, minimunAmount);
-
+      console.log('4번')
       connection.release();
 
-      return franchiseResult;
+      return DMfranchiseResult;
     }
   }
 };
@@ -118,37 +118,37 @@ exports.retrieveCheetahFranchise = async function (userId, deliveryFee, minimunA
     if (!minimunAmount) {
       // 5. C 치타배달 o, D 배달비 상관 X, M 최소주문 상관 X
       const connection = await pool.getConnection(async (conn) => conn);
-      const franchiseResult = await userDao.selectCFranchises(connection, userId);
-
+      const CfranchiseResult = await userDao.selectCFranchises(connection, userId);
+      console.log('5번')
       connection.release();
 
-      return franchiseResult;
+      return CfranchiseResult;
     } else {
       // 6. C 치타배달 o, D 배달비 상관 X, M 최소주문 적용
       const connection = await pool.getConnection(async (conn) => conn);
-      const MfranchiseResult = await userDao.selectCMFranchises(connection, userId, minimunAmount);
-
+      const CMfranchiseResult = await userDao.selectCMFranchises(connection, userId, minimunAmount);
+      console.log('6번')
       connection.release();
 
-      return franchiseResult;
+      return CMfranchiseResult;
     }
   } else {
     if (!minimunAmount) {
       // 7. C 치타배달 o, D 배달비 적용, M 최소주문 상관 X
       const connection = await pool.getConnection(async (conn) => conn);
-      const DfranchiseResult = await userDao.selectCDFranchises(connection, userId, deliveryFee);
-
+      const CDfranchiseResult = await userDao.selectCDFranchises(connection, userId, deliveryFee);
+      console.log('7번')
       connection.release();
 
-      return franchiseResult;
+      return CDfranchiseResult;
     } else {
       // 8. C 치타배달 o, D 배달비 적용, M 최소주문 적용
       const connection = await pool.getConnection(async (conn) => conn);
-      const DMfranchiseResult = await userDao.selectCDMFranchises(connection, userId, deliveryFee, minimunAmount);
-
+      const CDMfranchiseResult = await userDao.selectCDMFranchises(connection, userId, deliveryFee, minimunAmount);
+      console.log('8번')
       connection.release();
 
-      return franchiseResult;
+      return CDMfranchiseResult;
     }
   }
 };

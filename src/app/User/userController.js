@@ -108,6 +108,74 @@ exports.home = async function (req, res) {
 
 };
 
+
+/**
+ * API No. 4
+ * API Name : 골라먹는 맛집 조회 API
+ * [GET] /app/users/:userId/restaurants/famous
+ */
+exports.famous = async function (req, res) {
+    /**
+     * Path variable: userId
+     */
+    const userId = req.params.userId;
+
+    /**
+     * Query String: Cheetah, deliveryFee, minimunAmount
+     */
+    const Cheetah = req.query.Cheetah;
+    const deliveryFee = req.query.deliveryFee;
+    const minimunAmount = req.query.minimunAmount;
+
+    if (Cheetah !== 'Y' ) {
+        // 치타배달 상관 X
+        if (!deliveryFee) {
+            if (!minimunAmount) {
+                // 1. 치타배달 상관 X, 배달비 상관 X, 최소주문 상관 X
+                const famousResult = await userProvider.retrieveFamous(userId);
+                return res.send(response(baseResponse.SUCCESS, famousResult));
+            } else {
+                // 2. 치타배달 상관 X, 배달비 상관 X, 최소주문 적용
+                const famousResult = await userProvider.retrieveFamous(userId, minimunAmount);
+                return res.send(response(baseResponse.SUCCESS, famousResult));
+            }
+
+        } else {
+            if (!minimunAmount) {
+                // 3. 치타배달 상관 X, 배달비 적용, 최소주문 상관 X
+                const famousResult = await userProvider.retrieveFamous(userId, deliveryFee);
+                return res.send(response(baseResponse.SUCCESS, famousResult));
+            } else {
+                // 4. 치타배달 상관 X, 배달비 적용, 최소주문 적용
+                const famousResult = await userProvider.retrieveFamous(userId, deliveryFee, minimunAmount);
+                return res.send(response(baseResponse.SUCCESS, famousResult));
+            }
+        }
+    } else {
+        if (!deliveryFee) {
+            if (!minimunAmount) {
+                // 5. 치타배달 적용, 배달비 상관 X, 최소주문 상관 X
+                const CheetahfamousResult = await userProvider.retrieveCheetahFamous(userId);
+                return res.send(response(baseResponse.SUCCESS, CheetahfamousResult));
+            } else {
+                // 6. 치타배달 적용, 배달비 상관 X, 최소주문 적용
+                const CheetahfamousResult = await userProvider.retrieveCheetahFamous(userId, minimunAmount);
+                return res.send(response(baseResponse.SUCCESS, CheetahfamousResult));
+            }
+        } else {
+            if (!minimunAmount) {
+                // 7. 치타배달 적용, 배달비 적용, 최소주문 상관 X
+                const CheetahfamousResult = await userProvider.retrieveCheetahFamous(userId, deliveryFee);
+                return res.send(response(baseResponse.SUCCESS, CheetahfamousResult));
+            } else {
+                // 8. 치타배달 적용, 배달비 적용, 최소주문 적용
+                const CheetahfamousResult = await userProvider.retrieveCheetahFamous(userId, deliveryFee, minimunAmount);
+                return res.send(response(baseResponse.SUCCESS, CheetahfamousResult));
+            }
+        }
+    }
+};
+
 /**
  * API No. 5
  * API Name : 인기프랜차이즈 조회 API
@@ -128,51 +196,13 @@ exports.franchise = async function (req, res) {
 
     if (Cheetah !== 'Y' ) {
         // 치타배달 상관 X
-        if (!deliveryFee) {
-            if (!minimunAmount) {
-                // 1. 치타배달 상관 X, 배달비 상관 X, 최소주문 상관 X
-                const franchiseResult = await userProvider.retrieveFranchise(userId);
-                return res.send(response(baseResponse.SUCCESS, franchiseResult));
-            } else {
-                // 2. 치타배달 상관 X, 배달비 상관 X, 최소주문 적용
-                const franchiseResult = await userProvider.retrieveFranchise(userId, minimunAmount);
-                return res.send(response(baseResponse.SUCCESS, franchiseResult));
-            }
+        const franchiseResult = await userProvider.retrieveFranchise(userId, deliveryFee, minimunAmount);
+        return res.send(response(baseResponse.SUCCESS, franchiseResult));
 
-        } else {
-            if (!minimunAmount) {
-                // 3. 치타배달 상관 X, 배달비 적용, 최소주문 상관 X
-                const franchiseResult = await userProvider.retrieveDFranchise(userId, deliveryFee);
-                return res.send(response(baseResponse.SUCCESS, franchiseResult));
-            } else {
-                // 4. 치타배달 상관 X, 배달비 적용, 최소주문 적용
-                const franchiseResult = await userProvider.retrieveDFranchise(userId, deliveryFee, minimunAmount);
-                return res.send(response(baseResponse.SUCCESS, franchiseResult));
-            }
-        }
     } else {
-        if (!deliveryFee) {
-            if (!minimunAmount) {
-                // 5. 치타배달 적용, 배달비 상관 X, 최소주문 상관 X
-                const CheetahFranchiseResult = await userProvider.retrieveCheetahFranchise(userId);
-                return res.send(response(baseResponse.SUCCESS, CheetahFranchiseResult));
-            } else {
-                // 6. 치타배달 적용, 배달비 상관 X, 최소주문 적용
-                const CheetahFranchiseResult = await userProvider.retrieveCheetahFranchise(userId, minimunAmount);
-                return res.send(response(baseResponse.SUCCESS, CheetahFranchiseResult));
-            }
-        } else {
-            if (!minimunAmount) {
-                // 7. 치타배달 적용, 배달비 적용, 최소주문 상관 X
-                const CheetahFranchiseResult = await userProvider.retrieveCheetahDFranchise(userId, deliveryFee);
-                return res.send(response(baseResponse.SUCCESS, CheetahFranchiseResult));
-            } else {
-                // 8. 치타배달 적용, 배달비 적용, 최소주문 적용
-                const CheetahFranchiseResult = await userProvider.retrieveCheetahDFranchise(userId, deliveryFee, minimunAmount);
-                return res.send(response(baseResponse.SUCCESS, CheetahFranchiseResult));
-            }
+        const CheetahFranchiseResult = await userProvider.retrieveCheetahFranchise(userId, deliveryFee, minimunAmount);
+        return res.send(response(baseResponse.SUCCESS, CheetahFranchiseResult));
         }
-    }
 };
 
 /**
