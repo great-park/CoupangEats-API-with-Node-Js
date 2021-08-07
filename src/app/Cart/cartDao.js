@@ -23,8 +23,8 @@ async function selectmenuPerCartCheck(connection, cartId, menuId) {
 //  insertAdditionalMenuPerCart
 async function insertAdditionalMenuPerCart(connection, AdditionalMenuPerCartParams) {
     const insertAdditionalMenuPerCartQuery = `
-        INSERT INTO AdditionalMenuPerCart(cartId, menuId, additionalMenuId, addtionalMenuCount)
-        VALUES (?, ?, ?, ?);
+        INSERT INTO AdditionalMenuPerCart(cartId, menuId, additionalMenuId)
+        VALUES (?, ?, ?);
   `;
     const insertAdditionalMenuPerCartRow = await connection.query(
         insertAdditionalMenuPerCartQuery,

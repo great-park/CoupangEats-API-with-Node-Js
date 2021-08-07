@@ -14,9 +14,9 @@ const {emit} = require("nodemon");
  */
 exports.addCart = async function (req, res) {
     /**
-     * Body: userId, restId, cartId, menuId, menuCount, additionalMenuId, addtionalMenuCount
+     * Body: userId, restId, cartId, menuId, menuCount, additionalMenuId
      */
-    const {userId, restId, cartId, menuId, menuCount, additionalMenuId, addtionalMenuCount} = req.body;
+    const {userId, restId, cartId, menuId, menuCount, additionalMenuId} = req.body;
 
     // 빈값 체크
     if (!userId)
@@ -31,8 +31,7 @@ exports.addCart = async function (req, res) {
         return res.send(response(baseResponse.ADDCART_MENUCOUNT_EMPTY));
     if (!additionalMenuId)
         return res.send(response(baseResponse.ADDCART_ADDITIONALMENUID_EMPTY));
-    if (!addtionalMenuCount)
-        return res.send(response(baseResponse.ADDCART_ADDITIONALMENUCOUNT_EMPTY));
+
     // 숫자 확인
     if (isNaN(userId) === true)
         return res.send(response(baseResponse.ADDCART_USERID_NOTNUM));
@@ -46,14 +45,31 @@ exports.addCart = async function (req, res) {
         return res.send(response(baseResponse.ADDCART_MENUCOUNT_NOTNUM));
     if (isNaN(additionalMenuId) === true)
         return res.send(response(baseResponse.ADDCART_ADDITIONALMENUID_NOTNUM));
-    if (isNaN(addtionalMenuCount) === true)
-        return res.send(response(baseResponse.ADDCART_ADDITIONALMENUCOUNT_NOTNUM));
+
 
 
     const addCartResponse = await cartService.addCart(
-        userId, restId, cartId, menuId, menuCount, additionalMenuId, addtionalMenuCount
+        userId, restId, cartId, menuId, menuCount, additionalMenuId
     );
     return res.send(addCartResponse);
 
 };
+
+
+/**
+ * API No. 11
+ * API Name : 카트 조회 API
+ * [GET] /app/carts/:cartId
+ */
+exports.getCart = async function (req, res) {
+    /**
+     * Path variable: cartId
+     */
+    const cartId = req.params.cartId;
+
+    const CartList = await cartProvider.retrieveCart(cartId);
+    return res.send(response(baseResponse.SUCCESS, CartList));
+
+};
+
 

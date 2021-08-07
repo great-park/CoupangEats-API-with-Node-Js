@@ -30,14 +30,12 @@ module.exports = {
     ADDCART_MENUID_EMPTY: { "isSuccess": false, "code": 2017, "message":"menuId를 입력해주세요" },
     ADDCART_MENUCOUNT_EMPTY: { "isSuccess": false, "code": 2018, "message":"menuCount를 입력해주세요" },
     ADDCART_ADDITIONALMENUID_EMPTY: { "isSuccess": false, "code": 2019, "message":"additionalMenuId를 입력해주세요" },
-    ADDCART_ADDITIONALMENUCOUNT_EMPTY: { "isSuccess": false, "code": 2019, "message":"additionalMenuCount를 입력해주세요" },
-    ADDCART_USERID_NOTNUM: { "isSuccess": false, "code": 2020, "message":"userId는 숫자로 입력해주세요" },
-    ADDCART_RESTID_NOTNUM: { "isSuccess": false, "code": 2021, "message":"restId는 숫자로 입력해주세요" },
-    ADDCART_CARTID_NOTNUM: { "isSuccess": false, "code": 2022, "message":"cartId는 숫자로 입력해주세요" },
-    ADDCART_MENUID_NOTNUM: { "isSuccess": false, "code": 2023, "message":"menuId는 숫자로 입력해주세요" },
-    ADDCART_MENUCOUNT_NOTNUM: { "isSuccess": false, "code": 2024, "message":"menuCount는 숫자로 입력해주세요" },
-    ADDCART_ADDITIONALMENUID_NOTNUM: { "isSuccess": false, "code": 2025, "message":"additionalMenuId는 숫자로 입력해주세요" },
-    ADDCART_ADDITIONALMENUCOUNT_NOTNUM: { "isSuccess": false, "code": 2019, "message":"additionalMenuCount는 숫자로 입력해주세요" },
+    ADDCART_USERID_NOTNUM: { "isSuccess": false, "code": 2021, "message":"userId는 숫자로 입력해주세요" },
+    ADDCART_RESTID_NOTNUM: { "isSuccess": false, "code": 2022, "message":"restId는 숫자로 입력해주세요" },
+    ADDCART_CARTID_NOTNUM: { "isSuccess": false, "code": 2023, "message":"cartId는 숫자로 입력해주세요" },
+    ADDCART_MENUID_NOTNUM: { "isSuccess": false, "code": 2024, "message":"menuId는 숫자로 입력해주세요" },
+    ADDCART_MENUCOUNT_NOTNUM: { "isSuccess": false, "code": 2025, "message":"menuCount는 숫자로 입력해주세요" },
+    ADDCART_ADDITIONALMENUID_NOTNUM: { "isSuccess": false, "code": 2026, "message":"additionalMenuId는 숫자로 입력해주세요" },
 
 
     // Response error
@@ -50,7 +48,7 @@ module.exports = {
     SIGNIN_WITHDRAWAL_ACCOUNT : { "isSuccess": false, "code": 3006, "message": "탈퇴 된 계정입니다. 고객센터에 문의해주세요." },
 
     ADDCART_REDUNDANT_CARTID : { "isSuccess": false, "code": 3007, "message":"중복된 카트입니다." },
-    ADDCART_REDUNDANT_MENU: { "isSuccess": false, "code": 3008, "message":"해당 메뉴는 이미 카트에 담겼습니다." },
+    ADDCART_REDUNDANT_MENU: { "isSuccess": false, "code": 3008, "message":"해당 메뉴는 이미 카트에 담겼습니다. 추가는 수량을 변경하세요" },
 
 
     //Connection, Transaction 등의 서버 오류

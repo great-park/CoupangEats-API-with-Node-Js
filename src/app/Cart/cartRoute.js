@@ -5,5 +5,7 @@ module.exports = function(app){
     // 10. 카트 담기 API
     app.post('/app/carts', cart.addCart);
 
+    // 11. 카트 보기 API
+    app.get('/app/carts/:cartId', cart.getCart);
 
 };

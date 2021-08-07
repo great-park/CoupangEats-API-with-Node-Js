@@ -99,5 +99,14 @@ Dao의 쿼리를 여러개 만들고 provider에서 쿼리스트링에 따라서
 1. AdditonalMenuPerCart 2. MenuPerCart에 데이터를 삽입
 3. Cart에 userId, restId, userAddressId 삽입하여 해당 cart에 대한 row 생성, 빈 컬럼은 다른 카트 api에서 입력
 
+(정리)3가지 테이블에 데이터를 insert
+1. Cart에 userId, restId, userAddressId 삽입하여 해당 cart에 대한 row 생성
+나머지 컬럼은 14,15 API으로 삽입
+ userAddressId는 Body에 담지 않지만, 서브쿼리를 이용하여 userId에 연결된 대표 주소인덱스를 받아서 Cart의 userAddressId에 삽입한다.
+2.  MenuPerCart에 cartId, menuId, menuCount 삽입하여 해당 카트에 어떤 메뉴를 몇개 담을 지 정한다.
+3. AdditonalMenuPerCart에 cartId, menuId, additionalMenuId, addtionalMenuCount 삽입하여
+각 메뉴마다 어떤 추가 메뉴를 몇개 담을 지 정한다.
+
+
 카트 보기 : 선택한 주소정보(주소 카테고리, 대략주소+상세주소), 식당 이름, 치타배달여부, 카트에 담은 메뉴들과 가격, 배달비, 주문금액, 결제수단
 

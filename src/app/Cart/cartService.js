@@ -14,7 +14,7 @@ const {connect} = require("http2");
 // Service: Create, Update, Delete 비즈니스 로직 처리
 
 // 카트에 담기
-exports.addCart = async function (userId, restaurantId, cartId, menuId, menuCount, additionalMenuId, addtionalMenuCount) {
+exports.addCart = async function (userId, restaurantId, cartId, menuId, menuCount, additionalMenuId) {
     try {
         // 카트 인덱스 중복 확인
         const cartIdRows = await cartProvider.cartIdCheck(cartId);
@@ -27,7 +27,7 @@ exports.addCart = async function (userId, restaurantId, cartId, menuId, menuCoun
 
         const CartParams = [userId,restaurantId, userId];
         const MenuPerCartParams = [cartId, menuId, menuCount];
-        const AdditionalMenuPerCartParams = [cartId, menuId, additionalMenuId, addtionalMenuCount];
+        const AdditionalMenuPerCartParams = [cartId, menuId, additionalMenuId];
 
 
 

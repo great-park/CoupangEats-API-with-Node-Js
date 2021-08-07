@@ -22,3 +22,16 @@ exports.menuPerCartCheck = async function (cartId, menuId) {
 
     return menuPerCartCheckResult;
 };
+
+// 카트 조회
+
+exports.retrieveCart = async function (userId) {
+    const connection = await pool.getConnection(async (conn) => conn);
+
+    const retrieveCartResult = [
+        await cartDao.selectCart(connection, userId),
+
+    ];
+    connection.release();
+    return retrieveCartResult;
+};
