@@ -6,7 +6,7 @@ module.exports = {
 // 식당 자세한 정보
 async function selectRestDetailInfo(connection, restId) {
     const selectRestDetailInfoQuery = `
-        select restName, restPhoneNumber, CONCAT(sidoName,'',sigunguName,'',eupMyeonDongName,'',detailAddress),
+        select restName, restPhoneNumber, CONCAT(sidoName,'',sigunguName,'',eupMyeonDongName,'',detailAddress) as restAddress,
                managerName, registrationNumber, businessName, operationHour, restIntroduction, notice, originInfo, allergyInfo, nutritionInfo
         from Restaurant
                  inner join EupMyeonDong EMD on Restaurant.eupMyeonDongId = EMD.eupMyeonDongId

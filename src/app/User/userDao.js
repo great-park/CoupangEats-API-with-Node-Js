@@ -148,20 +148,20 @@ async function selectFranchises(connection, userId) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-           , star, count(reviewId), distance
+           , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where categoryId = 25 and (star > 4.5)
 group by restId;
@@ -180,20 +180,20 @@ async function selectRecentlyOpen(connection, userId) {
                case when deliveryFee = 0
                         then '무료'
                     else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-               , star, count(reviewId), distance
+               , star, count(reviewId), distance_KM
         from Restaurant
                  inner join Review R on Restaurant.restId = R.restId
                  inner join (SELECT userId, userAddressId,restId,
                                     #거리계산
-                                        CONCAT(
+                                        
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+          
+AS distance_KM
                              FROM Restaurant, UserAddress
                              where userId = ?
-                             ORDER BY distance) DistanceInfo
+                             ORDER BY distance_KM) DistanceInfo
                  inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
         where (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1
         group by restId;
@@ -214,20 +214,20 @@ async function selectFamous(connection, userId) {
                case when deliveryFee = 0
                         then '무료'
                     else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-               , star, count(reviewId), distance
+               , star, count(reviewId), distance_KM
         from Restaurant
                  inner join Review R on Restaurant.restId = R.restId
                  inner join (SELECT userId, userAddressId,restId,
                                     #거리계산
-                                        CONCAT(
+                                        
     left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
         cos(radians(restHardness) - radians(userHardness)) +
         sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-    , 'km')
-AS distance
+    
+AS distance_KM
                              FROM Restaurant, UserAddress
                              where userId = ?
-                             ORDER BY distance) DistanceInfo
+                             ORDER BY distance_KM) DistanceInfo
                  inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
         group by restId;
         `;
@@ -244,20 +244,20 @@ async function selectMFamous(connection, userId, minimunAmount) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-           , star, count(reviewId), distance
+           , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where minimunAmount < ?
 group by restId;
@@ -276,20 +276,20 @@ async function selectDFamous(connection, userId, deliveryFee) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-         , star, count(reviewId), distance
+         , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where Restaurant.deliveryFee < ?
 group by restId;
@@ -308,20 +308,20 @@ async function selectDMFamous(connection, userId, deliveryFee, minimunAmount) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-         , star, count(reviewId), distance
+         , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+          
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where Restaurant.deliveryFee < ?  and minimunAmount < ?
 group by restId;
@@ -340,20 +340,20 @@ async function selectCFamous(connection, userId) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-           , star, count(reviewId), distance
+           , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+          
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where Cheetah = 'Y'
 group by restId;
@@ -372,20 +372,20 @@ async function selectCMFamous(connection, userId, minimunAmount) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-           , star, count(reviewId), distance
+           , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+          
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where minimunAmount < ? and Cheetah = 'Y'
 group by restId;
@@ -404,20 +404,20 @@ async function selectCDFamous(connection, userId, deliveryFee) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-         , star, count(reviewId), distance
+         , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where Restaurant.deliveryFee < ? and Cheetah = 'Y'
 group by restId;
@@ -436,20 +436,20 @@ async function selectCDMFamous(connection, userId, deliveryFee, minimunAmount) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-         , star, count(reviewId), distance
+         , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where Restaurant.deliveryFee < ? and minimunAmount < ? and Cheetah = 'Y'
 group by restId;
@@ -470,20 +470,20 @@ async function selectMFranchises(connection, userId, minimunAmount) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-           , star, count(reviewId), distance
+           , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where categoryId = 25 and (star > 4.5) and minimunAmount < ?
 group by restId;
@@ -502,20 +502,20 @@ async function selectDFranchises(connection, userId, deliveryFee) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-         , star, count(reviewId), distance
+         , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where categoryId = 25 and (star > 4.5) and Restaurant.deliveryFee < ?
 group by restId;
@@ -534,20 +534,20 @@ async function selectDMFranchises(connection, userId, deliveryFee, minimunAmount
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-         , star, count(reviewId), distance
+         , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where categoryId = 25 and (star > 4.5) and Restaurant.deliveryFee < ?  and minimunAmount < ?
 group by restId;
@@ -566,20 +566,20 @@ async function selectCFranchises(connection, userId) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-           , star, count(reviewId), distance
+           , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where categoryId = 25 and (star > 4.5) and Cheetah = 'Y'
 group by restId;
@@ -598,20 +598,20 @@ async function selectCMFranchises(connection, userId, minimunAmount) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-           , star, count(reviewId), distance
+           , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where categoryId = 25 and (star > 4.5)  and minimunAmount < ? and Cheetah = 'Y'
 group by restId;
@@ -630,20 +630,20 @@ async function selectCDFranchises(connection, userId, deliveryFee) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-         , star, count(reviewId), distance
+         , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where categoryId = 25 and (star > 4.5)  and Restaurant.deliveryFee < ? and Cheetah = 'Y'
 group by restId;
@@ -662,20 +662,20 @@ async function selectCDMFranchises(connection, userId, deliveryFee, minimunAmoun
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-         , star, count(reviewId), distance
+         , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where categoryId = 25 and (star > 4.5)  and Restaurant.deliveryFee < ? and minimunAmount < ? and Cheetah = 'Y'
 group by restId;
@@ -694,20 +694,20 @@ async function selectMRecentlyOpen(connection, userId, minimunAmount) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-           , star, count(reviewId), distance
+           , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1 and minimunAmount < ?
 group by restId;
@@ -726,20 +726,20 @@ async function selectDRecentlyOpen(connection, userId, deliveryFee) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-         , star, count(reviewId), distance
+         , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+      
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1 and Restaurant.deliveryFee < ?
 group by restId;
@@ -758,20 +758,20 @@ async function selectDMRecentlyOpen(connection, userId, deliveryFee, minimunAmou
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-         , star, count(reviewId), distance
+         , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+          
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1 and Restaurant.deliveryFee < ?  and minimunAmount < ?
 group by restId;
@@ -790,20 +790,20 @@ async function selectCRecentlyOpen(connection, userId) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-           , star, count(reviewId), distance
+           , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+          
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1 and Cheetah = 'Y'
 group by restId;
@@ -822,20 +822,20 @@ async function selectCMRecentlyOpen(connection, userId, minimunAmount) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-           , star, count(reviewId), distance
+           , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+      
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1  and minimunAmount < ? and Cheetah = 'Y'
 group by restId;
@@ -854,20 +854,20 @@ async function selectCDRecentlyOpen(connection, userId, deliveryFee) {
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-         , star, count(reviewId), distance
+         , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1 and Restaurant.deliveryFee < ? and Cheetah = 'Y'
 group by restId;
@@ -886,20 +886,20 @@ async function selectCDMRecentlyOpen(connection, userId, deliveryFee, minimunAmo
            case when deliveryFee = 0
                     then '무료'
                 else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
-         , star, count(reviewId), distance
+         , star, count(reviewId), distance_KM
 from Restaurant
 inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
-       CONCAT(
+       
                left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km')
-AS distance
+           
+AS distance_KM
 FROM Restaurant, UserAddress
 where userId = ?
-ORDER BY distance) DistanceInfo
+ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1  and Restaurant.deliveryFee < ? and minimunAmount < ? and Cheetah = 'Y'
 group by restId;
@@ -930,16 +930,16 @@ async function selectRestImageUrl(connection, restId) {
 async function selectRestInfo(connection, userId, restId) {
     const selectRestInfoQuery = `
         select restName, star, COUNT(reviewId) as reviewCount,
-               CONCAT(
+               
                    left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
                                  cos(radians(restHardness) - radians(userHardness)) +
                                  sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
-           , 'km') as distance, Cheetah,
+            as distance_KM, Cheetah,
                case when deliveryFee = 0
                         then '무료'
                     else CONCAT(deliveryFee, '원')
                    end as deliveryFee
-                , case when minimunAmount = 0 then '무료' else CONCAT(minimunAmount, '원') end as minimunAmount
+                , case when minimunAmount = 0 then '없음' else CONCAT(minimunAmount, '원') end as minimunAmount
         from Restaurant
                  inner join Review R on Restaurant.restId = R.restId
                  inner join UserAddress UA on R.userId = UA.userId
@@ -968,7 +968,7 @@ async function selectReview(connection, restId) {
 // // 식당 당 메뉴
 async function selectMenu(connection, restId) {
     const selectMenuQuery = `
-        select menuId, subMenuCategory, menuName, CONCAT(menuPrice,'원'), menuImageUrl, menuInfo
+        select menuId, subMenuCategory, menuName, CONCAT(menuPrice,'원') as menuprice, menuImageUrl, menuInfo
         from Menu
         where restId = ?;
         `;
