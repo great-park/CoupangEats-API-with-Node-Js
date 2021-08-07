@@ -90,3 +90,14 @@ Dao의 쿼리를 여러개 만들고 provider에서 쿼리스트링에 따라서
 예를 들어 deliveryFee는 값을 전달하지 않고 minimunAmoint에만 값을 전달하고 싶어도 사용자가 minimunAmount에 전달한 값이 deliveryFee에
 전달되기 때문에 provider에서는 deliveryFee가 들어온 줄 알고 해당 Dao로 연결한다.
 컨트롤러에서 이 부분을 지우니 해결되었다.
+
+**********
+2021/08/07
+**********
+카트에 담기
+각 메뉴에서 메뉴의 수량과 각 메뉴에 대한 추가메뉴를 선택하여 담음
+1. AdditonalMenuPerCart 2. MenuPerCart에 데이터를 삽입
+3. Cart에 userId, restId, userAddressId 삽입하여 해당 cart에 대한 row 생성, 빈 컬럼은 다른 카트 api에서 입력
+
+카트 보기 : 선택한 주소정보(주소 카테고리, 대략주소+상세주소), 식당 이름, 치타배달여부, 카트에 담은 메뉴들과 가격, 배달비, 주문금액, 결제수단
+

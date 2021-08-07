@@ -24,6 +24,21 @@ module.exports = {
     SIGNIN_PASSWORD_LENGTH: { "isSuccess": false, "code": 2012, "message":"비밀번호는 8~20자리로 입력해주세요" },
     SIGNIN_EMAIL_ERROR_TYPE: { "isSuccess": false, "code": 2013, "message":"이메일 형식에 맞게 입력해주세요" },
 
+    ADDCART_USERID_EMPTY: { "isSuccess": false, "code": 2014, "message":"userId를 입력해주세요" },
+    ADDCART_RESTID_EMPTY: { "isSuccess": false, "code": 2015, "message":"restId를 입력해주세요" },
+    ADDCART_CARTID_EMPTY: { "isSuccess": false, "code": 2016, "message":"cartId를 입력해주세요" },
+    ADDCART_MENUID_EMPTY: { "isSuccess": false, "code": 2017, "message":"menuId를 입력해주세요" },
+    ADDCART_MENUCOUNT_EMPTY: { "isSuccess": false, "code": 2018, "message":"menuCount를 입력해주세요" },
+    ADDCART_ADDITIONALMENUID_EMPTY: { "isSuccess": false, "code": 2019, "message":"additionalMenuId를 입력해주세요" },
+    ADDCART_ADDITIONALMENUCOUNT_EMPTY: { "isSuccess": false, "code": 2019, "message":"additionalMenuCount를 입력해주세요" },
+    ADDCART_USERID_NOTNUM: { "isSuccess": false, "code": 2020, "message":"userId는 숫자로 입력해주세요" },
+    ADDCART_RESTID_NOTNUM: { "isSuccess": false, "code": 2021, "message":"restId는 숫자로 입력해주세요" },
+    ADDCART_CARTID_NOTNUM: { "isSuccess": false, "code": 2022, "message":"cartId는 숫자로 입력해주세요" },
+    ADDCART_MENUID_NOTNUM: { "isSuccess": false, "code": 2023, "message":"menuId는 숫자로 입력해주세요" },
+    ADDCART_MENUCOUNT_NOTNUM: { "isSuccess": false, "code": 2024, "message":"menuCount는 숫자로 입력해주세요" },
+    ADDCART_ADDITIONALMENUID_NOTNUM: { "isSuccess": false, "code": 2025, "message":"additionalMenuId는 숫자로 입력해주세요" },
+    ADDCART_ADDITIONALMENUCOUNT_NOTNUM: { "isSuccess": false, "code": 2019, "message":"additionalMenuCount는 숫자로 입력해주세요" },
+
 
     // Response error
     SIGNUP_REDUNDANT_PHONENUMBER : { "isSuccess": false, "code": 3001, "message":"중복된 전화번호입니다." },
@@ -33,6 +48,9 @@ module.exports = {
     SIGNIN_PASSWORD_WRONG : { "isSuccess": false, "code": 3004, "message": "비밀번호가 잘못 되었습니다." },
     SIGNIN_INACTIVE_ACCOUNT : { "isSuccess": false, "code": 3005, "message": "비활성화 된 계정입니다. 고객센터에 문의해주세요." },
     SIGNIN_WITHDRAWAL_ACCOUNT : { "isSuccess": false, "code": 3006, "message": "탈퇴 된 계정입니다. 고객센터에 문의해주세요." },
+
+    ADDCART_REDUNDANT_CARTID : { "isSuccess": false, "code": 3007, "message":"중복된 카트입니다." },
+    ADDCART_REDUNDANT_MENU: { "isSuccess": false, "code": 3008, "message":"해당 메뉴는 이미 카트에 담겼습니다." },
 
 
     //Connection, Transaction 등의 서버 오류
