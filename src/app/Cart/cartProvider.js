@@ -25,12 +25,18 @@ exports.menuPerCartCheck = async function (cartId, menuId) {
 
 // 카트 조회
 
-exports.retrieveCart = async function (userId) {
+exports.retrieveCart = async function (cartId) {
     const connection = await pool.getConnection(async (conn) => conn);
 
     const retrieveCartResult = [
-        await cartDao.selectCart(connection, userId),
-
+        await cartDao.selectCartAddress(connection, cartId),
+        await cartDao.selectCartRestInfo(connection, cartId),
+        await cartDao.selectCartMenuInfo(connection, cartId),
+        await cartDao.selectCartOrderPrice(connection, cartId),
+        await cartDao.selectCartTotalPrice(connection, cartId),
+        await cartDao.selectCartReq(connection, cartId),
+        await cartDao.selectCartCard(connection, cartId),
+        await cartDao.selectCartAccount(connection, cartId)
     ];
     connection.release();
     return retrieveCartResult;

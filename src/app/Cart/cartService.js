@@ -25,7 +25,7 @@ exports.addCart = async function (userId, restaurantId, cartId, menuId, menuCoun
         if (menuPerCartRows.length > 0)
             return errResponse(baseResponse.ADDCART_REDUNDANT_MENU);
 
-        const CartParams = [userId,restaurantId, userId];
+        const CartParams = [userId,restaurantId, userId, userId];
         const MenuPerCartParams = [cartId, menuId, menuCount];
         const AdditionalMenuPerCartParams = [cartId, menuId, additionalMenuId];
 
