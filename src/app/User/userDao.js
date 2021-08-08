@@ -12,7 +12,8 @@ module.exports = {
     selectRecentlyOpen, selectMRecentlyOpen, selectDRecentlyOpen, selectDMRecentlyOpen, selectCRecentlyOpen, selectCMRecentlyOpen, selectCDRecentlyOpen, selectCDMRecentlyOpen,
     selectFamous, selectMFamous, selectDFamous, selectDMFamous, selectCFamous, selectCMFamous, selectCDFamous, selectCDMFamous,
     selectMFranchises, selectDFranchises, selectDMFranchises, selectCFranchises, selectCMFranchises, selectCDFranchises, selectCDMFranchises,
-    selectRestInfo, selectRestImageUrl, selectReview, selectMenu
+    selectRestInfo, selectRestImageUrl, selectReview, selectMenu,
+    updateDefaultAddress
 };
 
 async function selectTestData(connection) {
@@ -104,7 +105,7 @@ async function selectUserDefaultAddress(connection, userId) {
                                      end
                             end
                    end as homeAddress,
-               eupMyeonDongCode, userLatitue, userHardness
+               eupMyeonDongCode, userLatitude, userLongitude
         from UserAddress
                  inner join DefaultAddress DA on UserAddress.userAddressId = DA.userAddressId;
         `;
@@ -154,9 +155,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -186,9 +187,9 @@ async function selectRecentlyOpen(connection, userId) {
                  inner join (SELECT userId, userAddressId,restId,
                                     #거리계산
                                         
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
           
 AS distance_KM
                              FROM Restaurant, UserAddress
@@ -220,9 +221,9 @@ async function selectFamous(connection, userId) {
                  inner join (SELECT userId, userAddressId,restId,
                                     #거리계산
                                         
-    left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-        cos(radians(restHardness) - radians(userHardness)) +
-        sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+    left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+        cos(radians(restLongitude) - radians(userLongitude)) +
+        sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
     
 AS distance_KM
                              FROM Restaurant, UserAddress
@@ -250,9 +251,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -282,9 +283,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -314,9 +315,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
           
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -346,9 +347,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
           
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -378,9 +379,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
           
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -410,9 +411,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -442,9 +443,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -476,9 +477,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -508,9 +509,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -540,9 +541,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -572,9 +573,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -604,9 +605,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -636,9 +637,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -668,9 +669,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -700,9 +701,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -732,9 +733,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
       
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -764,9 +765,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
           
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -796,9 +797,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
           
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -828,9 +829,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
       
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -860,9 +861,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -892,9 +893,9 @@ inner join Review R on Restaurant.restId = R.restId
 inner join (SELECT userId, userAddressId,restId,
        #거리계산
        
-               left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+               left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
            
 AS distance_KM
 FROM Restaurant, UserAddress
@@ -931,9 +932,9 @@ async function selectRestInfo(connection, userId, restId) {
     const selectRestInfoQuery = `
         select restName, star, COUNT(reviewId) as reviewCount,
                
-                   left((6371 * acos(cos(radians(userLatitue)) * cos(radians(restLatitue)) *
-                                 cos(radians(restHardness) - radians(userHardness)) +
-                                 sin(radians(userLatitue)) * sin(radians(restLatitue)))), 4)
+                   left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
             as distance_KM, Cheetah,
                case when deliveryFee = 0
                         then '무료'
@@ -979,3 +980,11 @@ async function selectMenu(connection, restId) {
     return selectMenuRow;
 }
 
+// 기본 주소 변경
+async function updateDefaultAddress(connection, userId, userAddressId) {
+    const updateDefaultAddressQuery = `
+        update DefaultAddress SET userAddressId = ? where userId = ?;
+  `;
+    const updateDefaultAddressRow = await connection.query(updateDefaultAddressQuery, [userAddressId, userId]);
+    return updateDefaultAddressRow[0];
+}

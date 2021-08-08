@@ -98,3 +98,19 @@ exports.postSignIn = async function (userEmail, password) {
         return errResponse(baseResponse.DB_ERROR);
     }
 };
+
+// 기본 주소 변경
+exports.editDefaultAddress = async function (userId, userAddressId) {
+    try {
+        console.log(userId)
+        const connection = await pool.getConnection(async (conn) => conn);
+        const editDefaultAddressResult = await userDao.updateDefaultAddress(connection, userId, userAddressId)
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+
+    } catch (err) {
+        logger.error(`App - editUser Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}

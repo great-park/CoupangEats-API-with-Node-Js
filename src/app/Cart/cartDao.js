@@ -1,7 +1,8 @@
 module.exports = {
     selectCartId, selectmenuPerCartCheck, insertAdditionalMenuPerCart, insertMenuPerCart, insertCart,
     selectCartAddress, selectCartRestInfo,
-    selectCartMenuInfo, selectCartOrderPrice, selectCartTotalPrice, selectCartCard,selectCartAccount, selectCartReq
+    selectCartMenuInfo, selectCartOrderPrice, selectCartTotalPrice, selectCartCard,selectCartAccount, selectCartReq,
+    addReq
 };
 
 // 카트 인덱스 체크
@@ -54,7 +55,7 @@ async function insertMenuPerCart(connection, MenuPerCartParams) {
 async function insertCart(connection, CartParams) {
     const insertCartQuery = `
         INSERT INTO Cart(userId, restId, userAddressId, repPaymentId)
-        VALUES (?, ?, (select repTotalAddressId from User where userId = ?), (select repPaymentId from RepPayment where userId = ?));
+        VALUES (?, ?, (select userAddressId from DefaultAddress where userId = ?), (select repPaymentId from RepPayment where userId = ?));
   `;
     const insertCartRow = await connection.query(
         insertCartQuery,
@@ -80,7 +81,8 @@ async function selectCartAddress(connection, cartId) {
                 end as addressCategory,
             CONCAT(sidoName,' ',sigunguName,' ',eupMyeonDongName,' ',detailAddress) as address
         from User
-                 inner join UserAddress UA on UA.userAddressId = User.repTotalAddressId
+                 inner join DefaultAddress DA on User.userId = DA.userId
+                 inner join UserAddress UA on UA.userAddressId = DA.userAddressId
                  inner join EupMyeonDong EMD on UA.eupMyeonDongCode = EMD.eupMyeonDongCode
                  inner join SiGunGu SGG on EMD.siGunGuCode = SGG.sigunguCode
                  inner join SiDo SD on SGG.sidoId = SD.siDoId
@@ -205,11 +207,23 @@ async function selectCartAccount(connection, cartId) {
     return CartAccountRows;
 }
 
-
+// 요청사항 조회
 async function selectCartReq(connection, cartId) {
     const selectCartReqQuery = `
         select reqDelivery, reqManager from Cart where cartId =?;
                 `;
     const [CartReqRows] = await connection.query(selectCartReqQuery, cartId);
     return CartReqRows;
+}
+
+// 요청사항 입력
+async function addReq(connection, reqManager, reqDelivery, cartId) {
+    const addReqQuery = `
+        update Cart SET reqManager = ?, reqDelivery=? where cartId = ?;
+  `;
+    const addReqRow = await connection.query(
+        addReqQuery, [reqManager, reqDelivery, cartId]
+    );
+
+    return addReqRow;
 }

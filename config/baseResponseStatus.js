@@ -37,6 +37,8 @@ module.exports = {
     ADDCART_MENUCOUNT_NOTNUM: { "isSuccess": false, "code": 2025, "message":"menuCount는 숫자로 입력해주세요" },
     ADDCART_ADDITIONALMENUID_NOTNUM: { "isSuccess": false, "code": 2026, "message":"additionalMenuId는 숫자로 입력해주세요" },
 
+    USER_ID_NOT_MATCH: { "isSuccess": false, "code": 2027, "message":"userId가 일치하지 않습니다. jwt를 확인해 주세요" },
+
 
     // Response error
     SIGNUP_REDUNDANT_PHONENUMBER : { "isSuccess": false, "code": 3001, "message":"중복된 전화번호입니다." },

@@ -213,6 +213,34 @@ exports.menu = async function (req, res) {
 };
 
 
+/**
+ * API No. 12
+ * API Name : 기본 배달지 주소 수정 + JWT + Validation
+ * [PATCH] /app/users/:userId/default-addresses
+ * body : userAddressId
+ * Header : jwt
+ */
+
+exports.patchDefaultAddress = async function (req, res) {
+
+    // jwt - userId, path variable :userId
+    /**
+     * Path variable: userId
+     */
+
+    const userIdFromJWT = req.verifiedToken.userId
+    const userId = req.params.userId;
+    const userAddressId = req.body.userAddressId;
+
+    // userAddressId가 userId에 속한 지 확인 validation 필요
+
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        const patchDefaultAddressInfo = await userService.editDefaultAddress(userId, userAddressId)
+        return res.send(patchDefaultAddressInfo);
+    }
+};
 
 
 

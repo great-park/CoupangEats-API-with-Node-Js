@@ -141,3 +141,4 @@ RepPayments 테이블 만들기 - repPayMethodId, userId , cartdId, accountId(�
 카트 담기 api에서는 결제수단에 repPayMethodId를 담으면 됨
 
 카드 테이블- 카드이름 컬럼 추가
+repTotalAddressId 삭제

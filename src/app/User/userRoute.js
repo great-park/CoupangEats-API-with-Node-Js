@@ -26,6 +26,9 @@ module.exports = function(app){
     // 7. 식당 메뉴창 API
     app.get('/app/users/:userId/restaurants/:restId', user.menu);
 
+    // 12. 기본 주소 변경 API = 배달지 주소 설정(저장한 주소 중 선택, 기본 지역을 수정)
+    app.patch('/app/users/:userId/default-addresses', jwtMiddleware, user.patchDefaultAddress);
+
 };
 
 

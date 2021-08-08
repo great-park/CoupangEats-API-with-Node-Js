@@ -73,3 +73,25 @@ exports.getCart = async function (req, res) {
 };
 
 
+/**
+ * API No. 13
+ * API Name : 카트 요청사항 입력 API
+ * [PATCH] /app/carts/:cartId/requests
+ */
+exports.addReq = async function (req, res) {
+    /**
+     * Body: reqManager, reqDelivery
+     */
+    /**
+     * Path variale: cartId
+     */
+
+    const {reqManager, reqDelivery} = req.body;
+    const cartId = req.params.cartId;
+
+    const addReqResponse = await cartService.addReq(
+        reqManager, reqDelivery, cartId
+    );
+    return res.send(addReqResponse);
+
+};

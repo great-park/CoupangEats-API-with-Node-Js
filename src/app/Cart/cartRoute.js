@@ -8,4 +8,9 @@ module.exports = function(app){
     // 11. 카트 보기 API
     app.get('/app/carts/:cartId', cart.getCart);
 
+    // 13. 카트 요청사항 입력 API
+    app.patch('/app/carts/:cartId/requests', cart.addReq);
+
+
+
 };

@@ -48,3 +48,19 @@ exports.addCart = async function (userId, restaurantId, cartId, menuId, menuCoun
         return errResponse(baseResponse.DB_ERROR);
     }
 };
+
+
+exports.addReq = async function (reqManager, reqDelivery, cartId) {
+    try {
+
+        const connection = await pool.getConnection(async (conn) => conn);
+        const editDefaultAddressResult = await cartDao.addReq(connection,reqManager, reqDelivery, cartId)
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+
+    } catch (err) {
+        logger.error(`App - addReq Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};
