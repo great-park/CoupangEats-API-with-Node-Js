@@ -243,6 +243,35 @@ exports.patchDefaultAddress = async function (req, res) {
 };
 
 
+/**
+ * API No. 14
+ * API Name : 대표 결제 수단 변경 + JWT + Validation
+ * [PATCH] /app/users/:userId/payments
+ * body :
+ * Header : jwt
+ */
+
+exports.patchReqPayment = async function (req, res) {
+
+    // jwt - userId, path variable :userId
+    /**
+     * Path variable: userId
+     */
+
+    const userIdFromJWT = req.verifiedToken.userId
+    const userId = req.params.userId;
+    const userAddressId = req.body.userAddressId;
+
+    // userAddressId가 userId에 속한 지 확인 validation 필요
+
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        const patchDefaultAddressInfo = await userService.editDefaultAddress(userId, userAddressId)
+        return res.send(patchDefaultAddressInfo);
+    }
+};
+
 
 
 

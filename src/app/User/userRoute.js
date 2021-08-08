@@ -29,6 +29,9 @@ module.exports = function(app){
     // 12. 기본 주소 변경 API = 배달지 주소 설정(저장한 주소 중 선택, 기본 지역을 수정)
     app.patch('/app/users/:userId/default-addresses', jwtMiddleware, user.patchDefaultAddress);
 
+    // 14. 대표 결제 수단 변경 API
+    app.patch('/app/users/:userId/payments', jwtMiddleware, user.patchReqPayment);
+
 };
 
 
