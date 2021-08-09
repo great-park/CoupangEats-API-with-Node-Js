@@ -1,6 +1,6 @@
 module.exports = {
     selectRestDetailInfo ,
-    selectRestMenuInfo, selectRestAdditionalMenu
+    selectRestMenuInfo, selectRestAdditionalMenu, selectReview
 };
 
 // 식당 자세한 정보
@@ -50,4 +50,41 @@ async function selectRestAdditionalMenu(connection, menuId) {
     );
 
     return selectRestAdditionalMenuRow;
+}
+
+async function selectReview(connection, restId) {
+    const selectReviewQuery = `
+        select reviewId, reviewContent, reviewImageUrl, goodCount, badCount, star, userName, menuName,
+               case when YEAR(curdate()) != YEAR(R.createdAt)
+      then DATE_FORMAT(R.createdAT,'%Y년 %m월 %d일')
+      else
+          case when TIMESTAMPDIFF(DAY, R.createdAt, curdate()) > 6
+              then DATE_FORMAT(R.createdAt, '%c월 %e일')
+              else
+                  case when TIMESTAMPDIFF(DAY,R.createdAt, current_timestamp ) > 2
+                      then DATE_FORMAT(R.createdAt, '%e일 전')
+                      when TIMESTAMPDIFF(DAY,R.createdAt, current_timestamp) = 2
+                      then DATE_FORMAT(R.createdAt, '그저께')
+                      when TIMESTAMPDIFF(DAY,R.createdAt, current_timestamp) = 1
+                      then DATE_FORMAT(R.createdAt, '어제')
+                      else
+                          case when TIMESTAMPDIFF(HOUR, R.createdAt, current_timestamp) >1
+                              then DATE_FORMAT(R.createdAt, '%H시간 전')
+                              else
+                                  case when TIMESTAMPDIFF(MINUTE, R.createdAt, current_timestamp) > 1
+                                      then DATE_FORMAT(R.createdAt, '%i분 전')
+                                      else DATE_FORMAT(R.createdAt, '%s초 전')
+        end
+        end
+        end
+        end
+        end as reviewCreatedAt
+from Review R
+inner join User U on R.userId = U.userId
+inner join Menu M on R.menuId = M.menuId
+where R.restId = ?;
+        `;
+    const [selectReviewRow] = await connection.query(selectReviewQuery, restId);
+
+    return selectReviewRow;
 }

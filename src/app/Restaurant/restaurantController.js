@@ -40,3 +40,20 @@ exports.restMenu = async function (req, res) {
 
 };
 
+
+/**
+ * API No. 16
+ * API Name : 리뷰 조회 API
+ * [GET] /app/restaurants/:restId/reviews
+ */
+exports.getReview = async function (req, res) {
+    /**
+     * Path variable:restId
+     */
+    const restId = req.params.restId;
+
+    const getReviewList = await restaurantProvider.getReview(restId);
+    return res.send(response(baseResponse.SUCCESS, getReviewList));
+
+};
+

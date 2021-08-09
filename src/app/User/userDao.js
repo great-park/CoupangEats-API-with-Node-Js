@@ -1,5 +1,5 @@
 module.exports = {
-    selectTestData,
+    selectTestData,getUserInfo,
     selectUseremail,
     selectUserphoneNumber,
     insertUserInfo,
@@ -13,7 +13,8 @@ module.exports = {
     selectFamous, selectMFamous, selectDFamous, selectDMFamous, selectCFamous, selectCMFamous, selectCDFamous, selectCDMFamous,
     selectMFranchises, selectDFranchises, selectDMFranchises, selectCFranchises, selectCMFranchises, selectCDFranchises, selectCDMFranchises,
     selectRestInfo, selectRestImageUrl, selectReview, selectMenu,
-    updateDefaultAddress
+    updateDefaultAddress,
+    updatePaymentAccount, updatePaymentCard, initializationPayment
 };
 
 async function selectTestData(connection) {
@@ -21,6 +22,15 @@ async function selectTestData(connection) {
     select * from User
                 `;
     const [Rows] = await connection.query(selectQuery);
+    return Rows;
+}
+
+
+async function getUserInfo(connection, userEmail) {
+    const selectQuery = `
+    select userName, phoneNumber from User where userEmail = ?
+                `;
+    const [Rows] = await connection.query(selectQuery, userEmail);
     return Rows;
 }
 
@@ -988,3 +998,34 @@ async function updateDefaultAddress(connection, userId, userAddressId) {
     const updateDefaultAddressRow = await connection.query(updateDefaultAddressQuery, [userAddressId, userId]);
     return updateDefaultAddressRow[0];
 }
+
+// 대표 결제수단 초기화
+async function initializationPayment(connection, userId) {
+    const initializationPaymentQuery = `
+        Update RepPayment SET cardId = null, accountId = null where userId = ?;
+  `;
+    const initializationPaymentRow = await connection.query(initializationPaymentQuery, userId);
+    return initializationPaymentRow[0];
+}
+
+
+
+// 대표 결제 수단 변경 -계좌
+async function updatePaymentAccount(connection, userId, accountId) {
+    const updatePaymentAccountQuery = `
+        Update RepPayment SET accountId = ? where userId = ?;
+  `;
+    const PaymentAccountRow = await connection.query(updatePaymentAccountQuery, [accountId, userId]);
+    return PaymentAccountRow[0];
+}
+
+
+// 대표 결제 수단 변경 -카드
+async function updatePaymentCard(connection, userId, cardId) {
+    const updatePaymentCardQuery = `
+        Update RepPayment SET cardId = ? where userId = ?;
+  `;
+    const PaymentCardRow = await connection.query(updatePaymentCardQuery, [cardId, userId]);
+    return PaymentCardRow[0];
+}
+

@@ -24,3 +24,12 @@ exports.retrieveRestMenu = async function (menuId) {
     connection.release();
     return RestMenuResult;
 };
+
+// 리뷰 조회 API
+exports.getReview = async function (restId) {
+    const connection = await pool.getConnection(async (conn) => conn);
+
+    const getReviewResult = await restaurantDao.selectReview(connection, restId);
+    connection.release();
+    return getReviewResult;
+};

@@ -8,4 +8,8 @@ module.exports = function(app){
     // 9. 특정 메뉴 조회 API
     app.get('/app/restaurants/menu/:menuId', restaurant.restMenu);
 
+    // 16. 리뷰 조회 API
+    app.get('/app/restaurants/:restId/reviews', restaurant.getReview);
+
+
 };

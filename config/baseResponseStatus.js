@@ -39,6 +39,12 @@ module.exports = {
 
     USER_ID_NOT_MATCH: { "isSuccess": false, "code": 2027, "message":"userId가 일치하지 않습니다. jwt를 확인해 주세요" },
 
+    ADDORDER_CARTID_EMPTY: { "isSuccess": false, "code": 2028, "message":"cartId를 입력해주세요" },
+    ADDORDER_CARTID_NOTNUM: { "isSuccess": false, "code": 2029, "message":"cartId는 숫자로 입력해주세요" },
+
+    REPPAY_USERID_EMPTY: { "isSuccess": false, "code": 2030, "message":"userId를 입력해주세요" },
+    REPPAY_USERID_NOTNUM: { "isSuccess": false, "code": 2031, "message":"userId는 숫자로 입력해주세요" },
+
 
     // Response error
     SIGNUP_REDUNDANT_PHONENUMBER : { "isSuccess": false, "code": 3001, "message":"중복된 전화번호입니다." },
@@ -51,6 +57,8 @@ module.exports = {
 
     ADDCART_REDUNDANT_CARTID : { "isSuccess": false, "code": 3007, "message":"중복된 카트입니다." },
     ADDCART_REDUNDANT_MENU: { "isSuccess": false, "code": 3008, "message":"해당 메뉴는 이미 카트에 담겼습니다. 추가는 수량을 변경하세요" },
+
+    SIGNUP_REDUNDANT_CARTID: { "isSuccess": false, "code": 3009, "message":"중복된 cartId입니다." },
 
 
     //Connection, Transaction 등의 서버 오류

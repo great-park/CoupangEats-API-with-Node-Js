@@ -34,13 +34,14 @@ exports.addCart = async function (userId, restaurantId, cartId, menuId, menuCoun
         const connection = await pool.getConnection(async (conn) => conn);
 
         const CartResult = await cartDao.insertCart(connection, CartParams);
-        const MenuPerCartResult = await cartDao.insertMenuPerCart(connection, MenuPerCartParams);
-        const AdditionalMenuPerCartResult = await cartDao.insertAdditionalMenuPerCart(connection, AdditionalMenuPerCartParams);
+        const x = ${CartResult[0].insertId};
+        // const MenuPerCartResult = await cartDao.insertMenuPerCart(connection, MenuPerCartParams);
+        // const AdditionalMenuPerCartResult = await cartDao.insertAdditionalMenuPerCart(connection, AdditionalMenuPerCartParams);
 
 
 
         connection.release();
-        return response(baseResponse.SUCCESS);
+        return response(baseResponse.SUCCESS, x);
 
 
     } catch (err) {

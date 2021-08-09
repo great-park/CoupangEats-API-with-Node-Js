@@ -233,6 +233,12 @@ exports.patchDefaultAddress = async function (req, res) {
     const userAddressId = req.body.userAddressId;
 
     // userAddressId가 userId에 속한 지 확인 validation 필요
+    // 빈 값 체크
+    if (!userId)
+        return res.send(response(baseResponse.REPPAY_USERID_EMPTY));
+    // 숫자 확인
+    if (isNaN(userId) === true)
+        return res.send(response(baseResponse.REPPAY_USERID_NOTNUM))
 
     if (userIdFromJWT != userId) {
         res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
@@ -247,7 +253,7 @@ exports.patchDefaultAddress = async function (req, res) {
  * API No. 14
  * API Name : 대표 결제 수단 변경 + JWT + Validation
  * [PATCH] /app/users/:userId/payments
- * body :
+ * body : cardId, accountId
  * Header : jwt
  */
 
@@ -260,15 +266,28 @@ exports.patchReqPayment = async function (req, res) {
 
     const userIdFromJWT = req.verifiedToken.userId
     const userId = req.params.userId;
-    const userAddressId = req.body.userAddressId;
+    const {cardId, accountId} = req.body;
 
-    // userAddressId가 userId에 속한 지 확인 validation 필요
+    // 빈 값 체크
+    if (!userId)
+        return res.send(response(baseResponse.REPPAY_USERID_EMPTY));
+    // 숫자 확인
+    if (isNaN(userId) === true)
+        return res.send(response(baseResponse.REPPAY_USERID_NOTNUM))
+
+
 
     if (userIdFromJWT != userId) {
         res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
     } else {
-        const patchDefaultAddressInfo = await userService.editDefaultAddress(userId, userAddressId)
-        return res.send(patchDefaultAddressInfo);
+        if (!cardId){
+            const patchPaymentAccount = await userService.editPaymentAccount(userId, accountId)
+            return res.send(patchPaymentAccount);
+
+        } else{
+            const patchPaymentCard = await userService.editPaymentCard(userId, cardId)
+            return res.send(patchPaymentCard);
+        }
     }
 };
 

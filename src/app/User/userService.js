@@ -89,8 +89,11 @@ exports.postSignIn = async function (userEmail, password) {
                 subject: "User",
             } // 유효 기간 365일
         );
+        const connection = await pool.getConnection(async (conn) => conn);
+        const getUserInfoResult = await userDao.getUserInfo(connection, userEmail)
+        connection.release();
 
-        return response(baseResponse.SUCCESS, {'userId': userInfoRows[0].userId, 'jwt': token});
+        return response(baseResponse.SUCCESS, {'userId': userInfoRows[0].userId, 'jwt': token, getUserInfoResult});
 
     } catch (err) {
         logger.error(`App - postSignIn Service error\n: ${err.message} \n${JSON.stringify(err)}`);
@@ -110,7 +113,42 @@ exports.editDefaultAddress = async function (userId, userAddressId) {
         return response(baseResponse.SUCCESS);
 
     } catch (err) {
-        logger.error(`App - editUser Service error\n: ${err.message}`);
+        logger.error(`App - editDefaultAddress Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 대표 결제수단 변경 - 계좌
+exports.editPaymentAccount = async function (userId, accountId) {
+    try {
+        console.log(userId)
+        const connection = await pool.getConnection(async (conn) => conn);
+
+        const initializationPaymentResult = await userDao.initializationPayment(connection, userId)
+        const editPaymentAccountResult = await userDao.updatePaymentAccount(connection, userId, accountId)
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+
+    } catch (err) {
+        logger.error(`App - editPaymentAccount Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 대표 결제수단 변경 - 카드
+exports.editPaymentCard = async function (userId, cardId) {
+    try {
+        console.log(userId)
+        const connection = await pool.getConnection(async (conn) => conn);
+
+        const editPaymentCardResult = await userDao.updatePaymentCard(connection, userId, cardId)
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+
+    } catch (err) {
+        logger.error(`App - editPaymentCard Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
     }
 }

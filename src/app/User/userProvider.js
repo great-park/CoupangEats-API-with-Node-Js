@@ -67,6 +67,10 @@ exports.retrieveRestarurants = async function (userId) {
     await userDao.selectRecentlyOpen(connection, userId),
     await userDao.selectFamous(connection, userId)
   ];
+
+  // const rewr = []
+  //
+  // const final = [restarurantsResult,   rewr       ]
   connection.release();
   return restarurantsResult;
 };
