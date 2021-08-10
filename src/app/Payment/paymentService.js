@@ -13,22 +13,32 @@ const {connect} = require("http2");
 
 
 // 결제하기
-exports.addOrder = async function (cartId) {
+exports.addOrder = async function (cartId, reqManager, reqDelivery, disposableCheck, userCouponId) {
     try {
         // cartId 중복 확인
         const cartIdRows = await paymentProvider.cartIdCheck(cartId);
         if (cartIdRows.length > 0)
             return errResponse(baseResponse.ADDORDER_REDUNDANT_CARTID);
 
+        if (!userCouponId) {
+            const connection = await pool.getConnection(async (conn) => conn);
+            const addOrderNoCouponParams =[cartId, reqManager, reqDelivery, disposableCheck];
+            const addTotalPayPriceParams =[cartId, cartId];
 
-        const connection = await pool.getConnection(async (conn) => conn);
+            const addOrderNoCouponResult = await paymentDao.addOrderNoCoupon(connection, addOrderNoCouponParams);
+            const addTotalPayPrice = await  paymentDao.addTotalPayPrice(connection, addTotalPayPriceParams);
+            connection.release();
+            return response(baseResponse.SUCCESS);
+        } else {
+            const connection = await pool.getConnection(async (conn) => conn);
+            const addOrderParams =[cartId, reqManager, reqDelivery, disposableCheck, userCouponId];
+            const addTotalPayPriceParams =[cartId, cartId];
 
-        const addOrderResult = await paymentDao.addOrder(connection, cartId);
-
-        connection.release();
-        return response(baseResponse.SUCCESS);
-
-
+            const addOrderResult = await paymentDao.addOrder(connection, addOrderParams);
+            const addTotalPayPrice = await  paymentDao.addTotalPayPrice(connection, addTotalPayPriceParams);
+            connection.release();
+            return response(baseResponse.SUCCESS);
+        }
     } catch (err) {
         logger.error(`App - addOrder Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);

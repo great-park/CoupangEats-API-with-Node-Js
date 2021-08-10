@@ -27,6 +27,13 @@ exports.addOrder = async function (req, res) {
         return res.send(response(baseResponse.ADDORDER_CARTID_NOTNUM))
     // 비밀번호 기타 조건 확인 - 영문/숫자/특수문자 2가지 이상 조합, 3개이상 연속되거나 동일한 문자/숫자 제외, 아이디 제외
 
-    const addOrderResponse = await paymentService.addOrder(cartId);
-    return res.send(addOrderResponse);
+    if (!userCouponId) {
+        // 쿠폰 x
+        const addOrderResponse = await paymentService.addOrder(cartId, reqManager, reqDelivery, disposableCheck);
+        return res.send(addOrderResponse);
+    } else {
+        // 쿠폰 O
+        const addOrderResponse = await paymentService.addOrder(cartId, reqManager, reqDelivery, disposableCheck, userCouponId);
+        return res.send(addOrderResponse);
+    }
 };
