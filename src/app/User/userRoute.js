@@ -12,7 +12,7 @@ module.exports = function(app){
     app.post('/app/logins', user.login);
 
     // 3. 홈화면 API
-    app.get('/app/users/:userId/restarurants', user.home);
+    app.get('/app/users/:userId/restarurants', jwtMiddleware, user.home);
 
     // 4. 골라먹는 맛집 API
     app.get('/app/users/:userId/restaurants/famous', user.famous);
@@ -24,9 +24,9 @@ module.exports = function(app){
     app.get('/app/users/:userId/restaurants/recently-openings', user.recentlyOpen);
 
     // 7. 식당 메뉴창 API
-    app.get('/app/users/:userId/restaurants/:restId', user.menu);
+    app.get('/app/users/:userId/restaurants/:restId',jwtMiddleware, user.menu);
 
-    // 12. 기본 주소 변경 API = 배달지 주소 설정(저장한 주소 중 선택, 기본 지역을 수정)
+    // 13. 기본 주소 변경 API = 배달지 주소 설정(저장한 주소 중 선택, 기본 지역을 수정)
     app.patch('/app/users/:userId/default-addresses', jwtMiddleware, user.patchDefaultAddress);
 
     // 14. 대표 결제 수단 변경 API

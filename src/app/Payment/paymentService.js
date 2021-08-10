@@ -18,7 +18,7 @@ exports.addOrder = async function (cartId) {
         // cartId 중복 확인
         const cartIdRows = await paymentProvider.cartIdCheck(cartId);
         if (cartIdRows.length > 0)
-            return errResponse(baseResponse.SIGNUP_REDUNDANT_CARTID);
+            return errResponse(baseResponse.ADDORDER_REDUNDANT_CARTID);
 
 
         const connection = await pool.getConnection(async (conn) => conn);

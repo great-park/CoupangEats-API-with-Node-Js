@@ -2,7 +2,7 @@ module.exports = {
      selectmenuPerCartCheck, insertAdditionalMenuPerCart, insertMenuPerCart, insertCart,
     selectCartAddress, selectCartRestInfo,
     selectCartMenuInfo,selectDeliveryFee, selectCartCard,selectCartAccount, selectCartReq,
-    addReq
+    addReq, selectCartCheck
 };
 
 // 같은 카트 내 메뉴 인덱스 중복 체크
@@ -12,6 +12,15 @@ async function selectmenuPerCartCheck(connection, cartId, menuId) {
                 `;
     const [menuPerCartCheckRows] = await connection.query(selectmenuPerCartCheckQuery, [cartId, menuId]);
     return menuPerCartCheckRows;
+}
+// 카트 존재 확인
+
+async function selectCartCheck(connection, cartId) {
+    const selectCartCheckQuery = `
+        select cartId from Cart where cartId = ?;
+                `;
+    const [selectCartCheckRows] = await connection.query(selectCartCheckQuery,cartId);
+    return selectCartCheckRows;
 }
 
 //  insertAdditionalMenuPerCart

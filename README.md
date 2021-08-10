@@ -190,3 +190,18 @@ Log는 winston, winston-daily-rotate-file 라이브러리를 사용해 구성했
 ## 2021-08-08 진행상황
 - 리뷰 조회 API 완성
 - API 피드백 반영 작업
+
+## 2021-08-09 진행상황
+- 카트 담기 API 수정 
+- 카트 생성 API 추가 
+- 카트 보기 API 수정 
+- 홈화면 API 통합 및 수정 
+- jwt 추가 // userId 있는 api // 3,7,10 
+- 카트 담기, 카트 존재에 대한 validation 추가 
+- 결제하기 API 수정
+- Order테이블에 컬럼 추가, Cart에서는 삭제
+  reqManager
+  reqDelivery
+  disposableCheck
+  userCouponId
+  totalPayPrice

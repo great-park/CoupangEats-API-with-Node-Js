@@ -15,6 +15,16 @@ exports.menuPerCartCheck = async function (cartId, menuId) {
     return menuPerCartCheckResult;
 };
 
+
+// 카트 존재 확인
+exports.CartCheck = async function (cartId) {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const CartCheckResult = await cartDao.selectCartCheck(connection, cartId);
+    connection.release();
+
+    return CartCheckResult;
+};
+
 // 카트 조회
 
 exports.retrieveCart = async function (cartId) {

@@ -13,7 +13,7 @@ const {connect} = require("http2");
 
 // Service: Create, Update, Delete 비즈니스 로직 처리
 
-// 카트 생성 / 카트에 담기 2
+// 카트 생성
 exports.createCart = async function (userId, restaurantId) {
     try {
 
@@ -38,6 +38,10 @@ exports.createCart = async function (userId, restaurantId) {
 // 카트에 담기 1
 exports.addCart = async function (cartId, menuId, menuCount, additionalMenuId) {
     try {
+        // 해당 카트가 존재하는지 확인
+        const CartCheckRows = await cartProvider.CartCheck(cartId);
+        if (CartCheckRows.length === 0)
+            return errResponse(baseResponse.NOT_EXIST_CART);
         // 같은 카트 안 메뉴 인덱스 중복 확인
         const menuPerCartRows = await cartProvider.menuPerCartCheck(cartId,menuId);
         if (menuPerCartRows.length > 0)

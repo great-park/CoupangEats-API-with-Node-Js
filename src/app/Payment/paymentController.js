@@ -16,7 +16,8 @@ exports.addOrder = async function (req, res) {
     /**
      * Body: cartId
      */
-    const {cartId} = req.body;
+    const {cartId, reqManager, reqDelivery, disposableCheck, userCouponId} = req.body;
+    //totalPirce는 쿼리로 계산해서 서버 데이터에 입력
 
     // 빈 값 체크
     if (!cartId)

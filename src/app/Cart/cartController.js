@@ -31,6 +31,10 @@ exports.createCart = async function (req, res) {
         return res.send(response(baseResponse.ADDCART_USERID_NOTNUM));
     if (isNaN(restId) === true)
         return res.send(response(baseResponse.ADDCART_RESTID_NOTNUM));
+    const userIdFromJWT = req.verifiedToken.userId;
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    }
 
 
     const createCartResponse = await cartService.createCart(userId, restId);
@@ -68,7 +72,6 @@ exports.addCart = async function (req, res) {
         return res.send(response(baseResponse.ADDCART_MENUCOUNT_NOTNUM));
     if (isNaN(additionalMenuId) === true)
         return res.send(response(baseResponse.ADDCART_ADDITIONALMENUID_NOTNUM));
-
 
 
     const addCartResponse = await cartService.addCart(

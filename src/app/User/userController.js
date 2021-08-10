@@ -96,12 +96,17 @@ exports.login = async function (req, res) {
  * API No. 3
  * API Name : 홈화면 조회 API
  * [GET] /app/users/:userId/restarurants
+ * header : jwt
  */
 exports.home = async function (req, res) {
     /**
      * Path variable: userId
      */
     const userId = req.params.userId;
+    const userIdFromJWT = req.verifiedToken.userId;
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    }
 
     const restarurantList = await userProvider.retrieveRestarurants(userId);
     return res.send(response(baseResponse.SUCCESS, restarurantList));
@@ -199,6 +204,7 @@ exports.recentlyOpen = async function (req, res) {
  * API No. 7
  * API Name : 식당메뉴 조회 API
  * [GET] /app/users/:userId/restaurants/:restId
+ * header : jwt
  */
 exports.menu = async function (req, res) {
     /**
@@ -206,6 +212,10 @@ exports.menu = async function (req, res) {
      */
     const userId = req.params.userId;
     const restId = req.params.restId;
+    const userIdFromJWT = req.verifiedToken.userId;
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    }
 
     const menuList = await userProvider.retrievemenu(userId, restId);
     return res.send(response(baseResponse.SUCCESS, menuList));
@@ -214,7 +224,7 @@ exports.menu = async function (req, res) {
 
 
 /**
- * API No. 12
+ * API No. 13
  * API Name : 기본 배달지 주소 수정 + JWT + Validation
  * [PATCH] /app/users/:userId/default-addresses
  * body : userAddressId

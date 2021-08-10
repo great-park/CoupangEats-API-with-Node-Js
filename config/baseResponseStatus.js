@@ -58,7 +58,9 @@ module.exports = {
     ADDCART_REDUNDANT_CARTID : { "isSuccess": false, "code": 3007, "message":"중복된 카트입니다." },
     ADDCART_REDUNDANT_MENU: { "isSuccess": false, "code": 3008, "message":"해당 메뉴는 이미 카트에 담겼습니다. 추가는 수량을 변경하세요" },
 
-    SIGNUP_REDUNDANT_CARTID: { "isSuccess": false, "code": 3009, "message":"중복된 cartId입니다." },
+    ADDORDER_REDUNDANT_CARTID: { "isSuccess": false, "code": 3009, "message":"이미 결제된 카트입니다." },
+
+    NOT_EXIST_CART: { "isSuccess": false, "code": 30010, "message":"없는 카트입니다." },
 
 
     //Connection, Transaction 등의 서버 오류
