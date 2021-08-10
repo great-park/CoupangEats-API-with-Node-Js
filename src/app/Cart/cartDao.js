@@ -1,18 +1,9 @@
 module.exports = {
-    selectCartId, selectmenuPerCartCheck, insertAdditionalMenuPerCart, insertMenuPerCart, insertCart,
+     selectmenuPerCartCheck, insertAdditionalMenuPerCart, insertMenuPerCart, insertCart,
     selectCartAddress, selectCartRestInfo,
-    selectCartMenuInfo, selectCartOrderPrice, selectCartTotalPrice, selectCartCard,selectCartAccount, selectCartReq,
+    selectCartMenuInfo,selectDeliveryFee, selectCartCard,selectCartAccount, selectCartReq,
     addReq
 };
-
-// 카트 인덱스 체크
-async function selectCartId(connection, cartId) {
-    const selectCartIdQuery = `
-        select cartId from Cart where cartId = ?;
-                `;
-    const [CartIdRows] = await connection.query(selectCartIdQuery, cartId);
-    return CartIdRows;
-}
 
 // 같은 카트 내 메뉴 인덱스 중복 체크
 async function selectmenuPerCartCheck(connection, cartId, menuId) {
@@ -129,59 +120,71 @@ async function selectCartMenuInfo(connection, cartId) {
     return CartMenuInfoRows;
 }
 
-// 카트 -총 주문금액 연산, 배달비
-
-async function selectCartOrderPrice(connection, cartId) {
-    const selectCartOrderPriceQuery = `
-        select CONCAT(SUM(totalPricePerMenu), '원') as toalOrderPrice,
-               case when deliveryFee = 0
-                        then '0원'
-                    else CONCAT(deliveryFee, '원') end as deliveryFee
-        from
-            (select M.restId,
-                    case when additionalMenuPrice != 0
-                        then CONCAT((menuPrice*MPC.menuCount + TAMP.totalAMPirce), '원')
-                         else CONCAT(menuPrice*MPC.menuCount, '원') end as totalPricePerMenu
-             from MenuPerCart MPC
-                      inner join Menu M on M.menuId = MPC.menuId
-                      left outer join AdditionalMenuPerCart AMC on AMC.menuId = MPC.menuId
-                      left outer join AdditionalMenu AM on AMC.additionalMenuId = AM.additionalMenuId
-                      inner join (select cartId ,menuId ,SUM(additionalMenuPrice) as totalAMPirce from AdditionalMenuPerCart AMC
-                    left outer join AdditionalMenu AM on AM.additionalMenuId = AMC.additionalMenuId group by menuId) TAMP on TAMP.menuId = MPC.menuId
-             where MPC.cartId = ?
-             group by MPC.menuId
-            ) PPM inner join Restaurant R on PPM.restId = R.restId;
+async function selectDeliveryFee(connection, cartId) {
+    const  selectDeliveryFeeQuery = `
+        select case when deliveryFee = 0
+                        then '+0원'
+                    else CONCAT('+',deliveryFee, '원') end as deliveryFee
+        from Restaurant inner join Cart C on Restaurant.restId = C.restId where cartId = ?;
                 `;
-    const [CartOrderPriceRows] = await connection.query(selectCartOrderPriceQuery, cartId);
-    return CartOrderPriceRows;
+    const [selectDeliveryFeeRows] = await connection.query(selectDeliveryFeeQuery, cartId);
+    return selectDeliveryFeeRows;
 }
 
-// 총 결제 금액
-async function selectCartTotalPrice(connection, cartId) {
-    const selectCartTotalPriceQuery = `
-        select CONCAT((toalOrderPrice + TotalOrderPrice.deliveryFee),'원') as totalPayPrice from
-            (select CONCAT(SUM(totalPricePerMenu), '원') as toalOrderPrice,
-                    case when deliveryFee = 0
-                             then '0원'
-                         else CONCAT(deliveryFee, '원') end as deliveryFee
-             from
-                 (select M.restId,
-                         case when additionalMenuPrice != 0
-                                then CONCAT((menuPrice*MPC.menuCount + TAMP.totalAMPirce), '원')
-                              else CONCAT(menuPrice*MPC.menuCount, '원') end as totalPricePerMenu
-                  from MenuPerCart MPC
-                           inner join Menu M on M.menuId = MPC.menuId
-                           left outer join AdditionalMenuPerCart AMC on AMC.menuId = MPC.menuId
-                           left outer join AdditionalMenu AM on AMC.additionalMenuId = AM.additionalMenuId
-                           inner join (select cartId ,menuId ,SUM(additionalMenuPrice) as totalAMPirce from AdditionalMenuPerCart AMC
-                            left outer join AdditionalMenu AM on AM.additionalMenuId = AMC.additionalMenuId group by menuId) TAMP on TAMP.menuId = MPC.menuId
-                  where MPC.cartId = ?
-                  group by MPC.menuId
-                 ) PPM inner join Restaurant R on PPM.restId = R.restId) TotalOrderPrice ;
-                `;
-    const [CartTotalPriceRows] = await connection.query(selectCartTotalPriceQuery, cartId);
-    return CartTotalPriceRows;
-}
+// // 카트 -총 주문금액 연산, 배달비
+//
+// async function selectCartOrderPrice(connection, cartId) {
+//     const selectCartOrderPriceQuery = `
+//         select CONCAT(SUM(totalPricePerMenu), '원') as toalOrderPrice,
+//                case when deliveryFee = 0
+//                         then '0원'
+//                     else CONCAT(deliveryFee, '원') end as deliveryFee
+//         from
+//             (select M.restId,
+//                     case when additionalMenuPrice != 0
+//                         then CONCAT((menuPrice*MPC.menuCount + TAMP.totalAMPirce), '원')
+//                          else CONCAT(menuPrice*MPC.menuCount, '원') end as totalPricePerMenu
+//              from MenuPerCart MPC
+//                       inner join Menu M on M.menuId = MPC.menuId
+//                       left outer join AdditionalMenuPerCart AMC on AMC.menuId = MPC.menuId
+//                       left outer join AdditionalMenu AM on AMC.additionalMenuId = AM.additionalMenuId
+//                       inner join (select cartId ,menuId ,SUM(additionalMenuPrice) as totalAMPirce from AdditionalMenuPerCart AMC
+//                     left outer join AdditionalMenu AM on AM.additionalMenuId = AMC.additionalMenuId group by menuId) TAMP on TAMP.menuId = MPC.menuId
+//              where MPC.cartId = ?
+//              group by MPC.menuId
+//             ) PPM inner join Restaurant R on PPM.restId = R.restId;
+//                 `;
+//     const [CartOrderPriceRows] = await connection.query(selectCartOrderPriceQuery, cartId);
+//     return CartOrderPriceRows;
+// }
+
+// // 총 결제 금액
+// async function selectCartTotalPrice(connection, cartId) {
+//     const selectCartTotalPriceQuery = `
+//         select CONCAT((toalOrderPrice + TotalOrderPrice.deliveryFee),'원') as totalPayPrice from
+//             (select CONCAT(SUM(totalPricePerMenu), '원') as toalOrderPrice,
+//                     case when deliveryFee = 0
+//                              then '0원'
+//                          else CONCAT(deliveryFee, '원') end as deliveryFee
+//              from
+//                  (select M.restId,
+//                          case when additionalMenuPrice != 0
+//                                 then CONCAT((menuPrice*MPC.menuCount + TAMP.totalAMPirce), '원')
+//                               else CONCAT(menuPrice*MPC.menuCount, '원') end as totalPricePerMenu
+//                   from MenuPerCart MPC
+//                            inner join Menu M on M.menuId = MPC.menuId
+//                            left outer join AdditionalMenuPerCart AMC on AMC.menuId = MPC.menuId
+//                            left outer join AdditionalMenu AM on AMC.additionalMenuId = AM.additionalMenuId
+//                            inner join (select cartId ,menuId ,SUM(additionalMenuPrice) as totalAMPirce from AdditionalMenuPerCart AMC
+//                             left outer join AdditionalMenu AM on AM.additionalMenuId = AMC.additionalMenuId group by menuId) TAMP on TAMP.menuId = MPC.menuId
+//                   where MPC.cartId = ?
+//                   group by MPC.menuId
+//                  ) PPM inner join Restaurant R on PPM.restId = R.restId) TotalOrderPrice ;
+//                 `;
+//     const [CartTotalPriceRows] = await connection.query(selectCartTotalPriceQuery, cartId);
+//     return CartTotalPriceRows;
+// }
+
 
 //카드 결제
 async function selectCartCard(connection, cartId) {

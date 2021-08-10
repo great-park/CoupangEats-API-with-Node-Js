@@ -59,20 +59,17 @@ exports.accountCheck = async function (userEmail) {
 exports.retrieveRestarurants = async function (userId) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const restarurantsResult = [
-      await userDao.selectUserDefaultAddress(connection, userId),
-    await userDao.selectEvents(connection),
-    await userDao.selectCategory(connection),
-    await userDao.selectFranchises(connection, userId),
+  const homeUserAddressResult = await userDao.selectUserDefaultAddress(connection, userId);
+  const eventResult = await userDao.selectEvents(connection);
+  const categoryResult = await userDao.selectCategory(connection);
+  const homeRestResult = [
+      await userDao.selectFranchises(connection, userId),
     await userDao.selectRecentlyOpen(connection, userId),
     await userDao.selectFamous(connection, userId)
-  ];
-
-  // const rewr = []
-  //
-  // const final = [restarurantsResult,   rewr       ]
+  ]
+  const homeFinalResult = {homeUserAddressResult,eventResult,categoryResult,homeRestResult}
   connection.release();
-  return restarurantsResult;
+  return homeFinalResult;
 };
 
 
@@ -318,14 +315,13 @@ exports.retrieveCheetahRecentlyOpen = async function (userId, deliveryFee, minim
 exports.retrievemenu = async function (userId, restId) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const menuResult = [
-    await userDao.selectRestImageUrl(connection, restId),
-    await userDao.selectRestInfo(connection, userId, restId),
-    await userDao.selectReview(connection, restId),
-    await userDao.selectMenu(connection, restId)
-  ];
+  const restImageResult = await userDao.selectRestImageUrl(connection, restId);
+  const restInfoResult = await userDao.selectRestInfo(connection, userId, restId);
+  const reviewResult = await userDao.selectReview(connection, restId);
+  const menuResult = await userDao.selectMenu(connection, restId);
+
   connection.release();
-  return menuResult;
+  return finalMenuResult = {restImageResult,restInfoResult,reviewResult,menuResult};
 };
 
 

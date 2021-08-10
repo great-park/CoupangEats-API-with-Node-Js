@@ -7,22 +7,49 @@ const {response, errResponse} = require("../../../config/response");
 const {emit} = require("nodemon");
 
 
+
 /**
  * API No. 10
- * API Name : 카트에 담기 API
- * [POST] /app/carts
+ * API Name : 카트 생성 API
+ * [POST] /app/newCarts
  */
-exports.addCart = async function (req, res) {
+exports.createCart = async function (req, res) {
     /**
-     * Body: userId, restId, cartId, menuId, menuCount, additionalMenuId
+     * Body: userId, restId
      */
-    const {userId, restId, cartId, menuId, menuCount, additionalMenuId} = req.body;
+    const {userId, restId} = req.body;
 
     // 빈값 체크
     if (!userId)
         return res.send(response(baseResponse.ADDCART_USERID_EMPTY));
     if (!restId)
         return res.send(response(baseResponse.ADDCART_RESTID_EMPTY));
+
+
+    // 숫자 확인
+    if (isNaN(userId) === true)
+        return res.send(response(baseResponse.ADDCART_USERID_NOTNUM));
+    if (isNaN(restId) === true)
+        return res.send(response(baseResponse.ADDCART_RESTID_NOTNUM));
+
+
+    const createCartResponse = await cartService.createCart(userId, restId);
+    return res.send(createCartResponse);
+
+};
+
+/**
+ * API No. 11
+ * API Name : 카트에 담기 API
+ * [POST] /app/carts
+ */
+exports.addCart = async function (req, res) {
+    /**
+     * Body: cartId, menuId, menuCount, additionalMenuId
+     */
+    const {cartId, menuId, menuCount, additionalMenuId} = req.body;
+
+    // 빈값 체크
     if (!cartId)
         return res.send(response(baseResponse.ADDCART_CARTID_EMPTY));
     if (!menuId)
@@ -33,10 +60,6 @@ exports.addCart = async function (req, res) {
         return res.send(response(baseResponse.ADDCART_ADDITIONALMENUID_EMPTY));
 
     // 숫자 확인
-    if (isNaN(userId) === true)
-        return res.send(response(baseResponse.ADDCART_USERID_NOTNUM));
-    if (isNaN(restId) === true)
-        return res.send(response(baseResponse.ADDCART_RESTID_NOTNUM));
     if (isNaN(cartId) === true)
         return res.send(response(baseResponse.ADDCART_CARTID_NOTNUM));
     if (isNaN(menuId) === true)
@@ -49,7 +72,7 @@ exports.addCart = async function (req, res) {
 
 
     const addCartResponse = await cartService.addCart(
-        userId, restId, cartId, menuId, menuCount, additionalMenuId
+        cartId, menuId, menuCount, additionalMenuId
     );
     return res.send(addCartResponse);
 
@@ -57,7 +80,7 @@ exports.addCart = async function (req, res) {
 
 
 /**
- * API No. 11
+ * API No. 12
  * API Name : 카트 조회 API
  * [GET] /app/carts/:cartId
  */
@@ -69,29 +92,5 @@ exports.getCart = async function (req, res) {
 
     const CartList = await cartProvider.retrieveCart(cartId);
     return res.send(response(baseResponse.SUCCESS, CartList));
-
-};
-
-
-/**
- * API No. 13
- * API Name : 카트 요청사항 입력 API
- * [PATCH] /app/carts/:cartId/requests
- */
-exports.addReq = async function (req, res) {
-    /**
-     * Body: reqManager, reqDelivery
-     */
-    /**
-     * Path variale: cartId
-     */
-
-    const {reqManager, reqDelivery} = req.body;
-    const cartId = req.params.cartId;
-
-    const addReqResponse = await cartService.addReq(
-        reqManager, reqDelivery, cartId
-    );
-    return res.send(addReqResponse);
 
 };
