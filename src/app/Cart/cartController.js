@@ -9,7 +9,7 @@ const {emit} = require("nodemon");
 
 
 /**
- * API No. 10
+ * API No. 12
  * API Name : 카트 생성 API
  * [POST] /app/newCarts
  */
@@ -43,7 +43,7 @@ exports.createCart = async function (req, res) {
 };
 
 /**
- * API No. 11
+ * API No. 13
  * API Name : 카트에 담기 API
  * [POST] /app/carts
  */
@@ -83,7 +83,7 @@ exports.addCart = async function (req, res) {
 
 
 /**
- * API No. 12
+ * API No. 14
  * API Name : 카트 조회 API
  * [GET] /app/carts/:cartId
  */

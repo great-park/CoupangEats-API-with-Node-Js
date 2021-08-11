@@ -116,6 +116,19 @@ exports.home = async function (req, res) {
 
 /**
  * API No. 4
+ * API Name : 홈화면 비 회원용 조회 API
+ * [GET] /app/users/restarurants
+ */
+exports.noUserHome = async function (req, res) {
+
+    const restarurantNoUserList = await userProvider.retrieveRestarurantsNoUser();
+    return res.send(response(baseResponse.SUCCESS, restarurantNoUserList));
+
+};
+
+
+/**
+ * API No. 5
  * API Name : 골라먹는 맛집 API
  * [GET] /app/users/:userId/restaurants/famous
  */
@@ -144,7 +157,7 @@ exports.famous = async function (req, res) {
 };
 
 /**
- * API No. 5
+ * API No. 6
  * API Name : 인기프랜차이즈 조회 API
  * [GET] /app/users/:userId/restaurants/franchises
  */
@@ -173,7 +186,7 @@ exports.franchise = async function (req, res) {
 };
 
 /**
- * API No. 6
+ * API No. 7
  * API Name : 새로들어왔어요 조회 API
  * [GET] /app/users/:userId/restaurants/recently-openings
  */
@@ -201,7 +214,7 @@ exports.recentlyOpen = async function (req, res) {
     }
 };
 /**
- * API No. 7
+ * API No. 8
  * API Name : 식당메뉴 조회 API
  * [GET] /app/users/:userId/restaurants/:restId
  * header : jwt
@@ -222,9 +235,25 @@ exports.menu = async function (req, res) {
 
 };
 
+/**
+ * API No. 9
+ * API Name : 식당메뉴 조회 비회원API
+ * [GET] /app/users/restaurants/:restId
+ */
+exports.noUserMenu = async function (req, res) {
+    /**
+     * Path variable: restId
+     */
+    const restId = req.params.restId;
+
+    const menuNoUserList = await userProvider.retrievemenuNoUser(restId);
+    return res.send(response(baseResponse.SUCCESS, menuNoUserList));
+
+};
+
 
 /**
- * API No. 13
+ * API No. 15
  * API Name : 기본 배달지 주소 수정 + JWT + Validation
  * [PATCH] /app/users/:userId/default-addresses
  * body : userAddressId
@@ -260,7 +289,7 @@ exports.patchDefaultAddress = async function (req, res) {
 
 
 /**
- * API No. 14
+ * API No. 16
  * API Name : 대표 결제 수단 변경 + JWT + Validation
  * [PATCH] /app/users/:userId/payments
  * body : cardId, accountId

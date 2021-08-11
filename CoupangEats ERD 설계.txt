@@ -142,3 +142,11 @@ RepPayments 테이블 만들기 - repPayMethodId, userId , cartdId, accountId(�
 
 카드 테이블- 카드이름 컬럼 추가
 repTotalAddressId 삭제
+
+2021/08/10
+- Order테이블에 컬럼 추가, Cart에서는 삭제
+reqManager
+reqDelivery
+disposableCheck
+userCouponId
+totalPayPrice

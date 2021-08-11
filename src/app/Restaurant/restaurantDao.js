@@ -1,6 +1,6 @@
 module.exports = {
-    selectRestDetailInfo ,
-    selectRestMenuInfo, selectRestAdditionalMenu, selectReview
+    selectRestDetailInfo , userOrderCheck,
+    selectRestMenuInfo, selectRestAdditionalMenu, selectReview, increaseGood, increaseBad, postReview
 };
 
 // 식당 자세한 정보
@@ -87,4 +87,50 @@ where R.restId = ?;
     const [selectReviewRow] = await connection.query(selectReviewQuery, restId);
 
     return selectReviewRow;
+}
+
+
+// 좋아요
+async function increaseGood(connection, restId, reviewId) {
+    const increaseGoodQuery = `
+        Update Review Set goodCount = goodCount + 1 where restId = ? and reviewId = ?;
+        `;
+    const [increaseGoodRow] = await connection.query(increaseGoodQuery, [restId, reviewId]);
+
+    return increaseGoodRow;
+}
+
+
+// 싫어요
+async function increaseBad(connection, restId, reviewId) {
+    const increaseBadQuery = `
+        Update Review Set badCount = badCount + 1 where restId = ? and reviewId = ?;
+        `;
+    const [increaseBadRow] = await connection.query(increaseBadQuery, [restId, reviewId]);
+
+    return increaseBadRow;
+}
+// 리뷰 작성
+async function postReview(connection,restId, menuId, userId, reviewContent, reviewImageUrl, star) {
+    const postReviewQuery = `
+        INSERT INTO Review(restId, menuId, userId, reviewContent, reviewImageUrl, star) values (?,?,?,?,?,?);
+        `;
+    const [postReviewRow] = await connection.query(postReviewQuery, [restId, menuId, userId, reviewContent, reviewImageUrl, star]);
+
+    return postReviewRow;
+}
+
+
+async function userOrderCheck(connection, userId, menuId) {
+    const userOrderCheckQuery = `
+        select userId, C.cartId, menuId
+        from \`Order\`
+                 inner join Cart C on \`Order\`.cartId = C.cartId
+                 inner join MenuPerCart MPC on \`Order\`.cartId = MPC.cartId
+        where userId = ?
+          and menuId = ?;     
+        `;
+    const [userOrderCheckRow] = await connection.query(userOrderCheckQuery, [userId, menuId]);
+
+    return userOrderCheckRow;
 }

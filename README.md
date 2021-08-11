@@ -205,3 +205,21 @@ Log는 winston, winston-daily-rotate-file 라이브러리를 사용해 구성했
   disposableCheck
   userCouponId
   totalPayPrice
+  
+  
+## 2021-08-10 진행상황
+- 카트 생성과 카트 담기로 나눔
+- 홈화면 API 다시 합침
+- api 전체 검토하여 result 객체 안 배열들 마다 구분을 위해서 배열명을 부여
+- user정보를 담아서 사용하는 경우 jwt 추가
+- 결제하기 API 수정
+- 리뷰 조회 API 완성
+
+## 2021-08-11 진행상황
+- 홈화면 API 수정
+- 식당 메뉴창 API 수정
+- 인근 지역만 불러오도록 DAO 파일 수정
+- 리뷰 평가하기 API 완성
+- 리뷰 작성 API 완성
+- 더미데이터 작업
+  

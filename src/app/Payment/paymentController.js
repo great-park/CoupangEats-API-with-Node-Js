@@ -8,7 +8,7 @@ const {emit} = require("nodemon");
 
 
 /**
- * API No. 15
+ * API No. 17
  * API Name : 결제하기 API - 결제된 카트
  * [POST] /app/payments
  */

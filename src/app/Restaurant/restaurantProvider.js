@@ -33,3 +33,11 @@ exports.getReview = async function (restId) {
     connection.release();
     return getReviewResult;
 };
+
+exports.userOrderCheck = async function (userId, menuId) {
+    const connection = await pool.getConnection(async (conn) => conn);
+
+    const userOrderCheckResult = await restaurantDao.userOrderCheck(connection, userId, menuId);
+    connection.release();
+    return userOrderCheckResult;
+};

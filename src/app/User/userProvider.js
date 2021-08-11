@@ -57,21 +57,36 @@ exports.accountCheck = async function (userEmail) {
 
 // 홈화면
 exports.retrieveRestarurants = async function (userId) {
+    const connection = await pool.getConnection(async (conn) => conn);
+
+    const homeUserAddressResult = await userDao.selectUserDefaultAddress(connection, userId);
+    const eventResult = await userDao.selectEvents(connection);
+    const categoryResult = await userDao.selectCategory(connection);
+    const homeRestResult = [
+      await userDao.selectFranchises(connection, userId),
+      await userDao.selectRecentlyOpen(connection, userId),
+      await userDao.selectFamous(connection, userId)
+    ]
+    const homeFinalResult = {homeUserAddressResult,eventResult,categoryResult,homeRestResult}
+    connection.release();
+    return homeFinalResult;
+};
+
+// 비회원용 홈화면
+exports.retrieveRestarurantsNoUser = async function () {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const homeUserAddressResult = await userDao.selectUserDefaultAddress(connection, userId);
   const eventResult = await userDao.selectEvents(connection);
   const categoryResult = await userDao.selectCategory(connection);
   const homeRestResult = [
-      await userDao.selectFranchises(connection, userId),
-    await userDao.selectRecentlyOpen(connection, userId),
-    await userDao.selectFamous(connection, userId)
+    await userDao.selectFranchisesNoUserId(connection),
+    await userDao.selectRecentlyOpenNoUserId(connection),
+    await userDao.selectFamousNoUserId(connection)
   ]
-  const homeFinalResult = {homeUserAddressResult,eventResult,categoryResult,homeRestResult}
+  const homeFinalResult = {eventResult,categoryResult,homeRestResult}
   connection.release();
   return homeFinalResult;
 };
-
 
 //골라먹는 맛집
 exports.retrievefamous = async function (userId, deliveryFee, minimunAmount) {
@@ -322,6 +337,20 @@ exports.retrievemenu = async function (userId, restId) {
 
   connection.release();
   return finalMenuResult = {restImageResult,restInfoResult,reviewResult,menuResult};
+};
+
+
+// 식당 메뉴창 비회원용 API
+exports.retrievemenuNoUser = async function (restId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const restImageNoUserResult = await userDao.selectRestImageUrl(connection, restId);
+  const restInfoNoUserResult = await userDao.selectRestInfoNoUser(connection, restId); //
+  const reviewNoUserResult = await userDao.selectReview(connection, restId);
+  const menuNoUserResult = await userDao.selectMenu(connection, restId);
+
+  connection.release();
+  return finalMenuResult = {restImageNoUserResult,restInfoNoUserResult,reviewNoUserResult,menuNoUserResult};
 };
 
 

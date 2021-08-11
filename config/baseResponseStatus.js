@@ -45,6 +45,16 @@ module.exports = {
     REPPAY_USERID_EMPTY: { "isSuccess": false, "code": 2030, "message":"userId를 입력해주세요" },
     REPPAY_USERID_NOTNUM: { "isSuccess": false, "code": 2031, "message":"userId는 숫자로 입력해주세요" },
 
+    REVIEW_RESTID_EMPTY: { "isSuccess": false, "code": 2032, "message":"restId를 입력해주세요" },
+    REVIEW_REVEWID_EMPTY: { "isSuccess": false, "code": 2033, "message":"reviewId를 입력해주세요" },
+    REVIEW_USERID_EMPTY: { "isSuccess": false, "code": 2034, "message":"userId를 입력해주세요" },
+    REVIEW_REVIEWCONTEN_EMPTY: { "isSuccess": false, "code": 2035, "message":"리뷰 내용을 입력해주세요" },
+    REVIEW_STAR_EMPTY: { "isSuccess": false, "code": 2036, "message":"별점을 입력해주세요" },
+    REVIEW_USERID_NOTNUM: { "isSuccess": false, "code": 2037, "message":"userId는 숫자로 입력해주세요" },
+    REVIEW_RESTID_NOTNUM: { "isSuccess": false, "code": 2038, "message":"restId는 숫자로 입력해주세요" },
+    REVIEW_STAR_RANGE: { "isSuccess": false, "code": 2039, "message":"별점은 0~5 사이의 숫자로 입력해주세요" },
+    REVIEW_CONTENT_RANGE: { "isSuccess": false, "code": 2040, "message":"리뷰는 200자 이내로 입력해주세요" },
+
 
     // Response error
     SIGNUP_REDUNDANT_PHONENUMBER : { "isSuccess": false, "code": 3001, "message":"중복된 전화번호입니다." },
@@ -60,7 +70,9 @@ module.exports = {
 
     ADDORDER_REDUNDANT_CARTID: { "isSuccess": false, "code": 3009, "message":"이미 결제된 카트입니다." },
 
-    NOT_EXIST_CART: { "isSuccess": false, "code": 30010, "message":"없는 카트입니다." },
+    NOT_EXIST_CART: { "isSuccess": false, "code": 3010, "message":"없는 카트입니다." },
+
+    REVIEW_NOT_ORDER: { "isSuccess": false, "code": 3011, "message":"해당 유저는 이 메뉴를 주문하지 않아 리뷰를 작성할 수 없습니다." },
 
 
     //Connection, Transaction 등의 서버 오류
