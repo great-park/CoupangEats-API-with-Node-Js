@@ -17,12 +17,11 @@ exports.retrieveRestDetailInfo = async function (restId) {
 exports.retrieveRestMenu = async function (menuId) {
     const connection = await pool.getConnection(async (conn) => conn);
 
-    const RestMenuResult = [
-        await restaurantDao.selectRestMenuInfo(connection, menuId),
-        await restaurantDao.selectRestAdditionalMenu(connection, menuId)
-    ];
+    const RestMenuResult = await restaurantDao.selectRestMenuInfo(connection, menuId);
+    const RestAdditionalMenuResult = await restaurantDao.selectRestAdditionalMenu(connection, menuId);
     connection.release();
-    return RestMenuResult;
+    const finalRestMenuResult = {RestMenuResult, RestAdditionalMenuResult};
+    return finalRestMenuResult;
 };
 
 // 리뷰 조회 API

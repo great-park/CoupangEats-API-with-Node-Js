@@ -152,3 +152,74 @@ exports.editPaymentCard = async function (userId, cardId) {
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+
+// 배달지 추가
+exports.addUserAddress = async function (userId,eupMyeonDongName, detailAddress, addressCategory, introduction) {
+    try {
+        //읍면동 이름 유효 확인
+        const EMDRows = await userProvider.EMDCheck(eupMyeonDongName);
+        if (EMDRows.length === 0)
+            return errResponse(baseResponse.EMD_INVAILD_NAME);
+        console.log(userId)
+
+        if (!introduction){
+            const connection = await pool.getConnection(async (conn) => conn);
+            const addUserAddressResult = await userDao.addUserAddressNoI(connection,userId,eupMyeonDongName, detailAddress, addressCategory);
+            connection.release();
+            return response(baseResponse.SUCCESS);
+        }else {
+            const connection = await pool.getConnection(async (conn) => conn);
+            const addUserAddressResult = await userDao.addUserAddress(connection,userId,eupMyeonDongName, detailAddress,addressCategory, introduction);
+            connection.release();
+            return response(baseResponse.SUCCESS);
+        }
+    } catch (err) {
+        logger.error(`App - addUserAddress Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 배달지 수정
+exports.patchUserAddress = async function (eupMyeonDongName, detailAddress, addressCategory, introduction, userAddressId, userId) {
+    try {
+        //읍면동 이름 유효 확인
+        const EMDRows = await userProvider.EMDCheck(eupMyeonDongName);
+        if (EMDRows.length === 0)
+            return errResponse(baseResponse.EMD_INVAILD_NAME);
+        console.log(userId)
+
+        if (!introduction){
+            const connection = await pool.getConnection(async (conn) => conn);
+            const patchUserAddressResult = await userDao.patchUserAddressNoI(connection,eupMyeonDongName, detailAddress, addressCategory, userAddressId, userId);
+            connection.release();
+            return response(baseResponse.SUCCESS);
+        }else {
+            const connection = await pool.getConnection(async (conn) => conn);
+            const patchUserAddressResult = await userDao.patchUserAddress(connection,eupMyeonDongName, detailAddress,addressCategory, introduction, userAddressId, userId);
+            connection.release();
+            return response(baseResponse.SUCCESS);
+        }
+    } catch (err) {
+        logger.error(`App - patchUserAddress Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 즐겨찾기 추가
+exports.addBookmarks = async function (userId,restId) {
+    try {
+        //즐겨찾기 중복 확인
+        const BookmarksRows = await userProvider.BookmarksCheck(userId, restId);
+        if (BookmarksRows.length > 0)
+            return errResponse(baseResponse.BOOKMARKS_REDUNDANT);
+
+        console.log(userId)
+        const connection = await pool.getConnection(async (conn) => conn);
+        const addBookmarksResult = await userDao.addBookmarks(connection,userId,restId);
+        connection.release();
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - addBookmarks Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}

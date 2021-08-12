@@ -55,6 +55,14 @@ module.exports = {
     REVIEW_STAR_RANGE: { "isSuccess": false, "code": 2039, "message":"별점은 0~5 사이의 숫자로 입력해주세요" },
     REVIEW_CONTENT_RANGE: { "isSuccess": false, "code": 2040, "message":"리뷰는 200자 이내로 입력해주세요" },
 
+    ADDADDRESS_EMD_NAME_EMPTY: { "isSuccess": false, "code": 2041, "message":"읍/면/동을 입력해주세요" },
+    ADDADDRESS_DETAIL_ADDRESS_EMPTY: { "isSuccess": false, "code": 2042, "message":"상세주소를 입력해주세요" },
+    DETAIL_ADDRESS_LENGTH: { "isSuccess": false, "code": 2043, "message":"상세주소는 50자 이내로 입력해주세요" },
+    ADDADDRESS_INTRODUCTION_LENGTH: { "isSuccess": false, "code": 2044, "message":"길안내는 100자 이내로 입력해주세요" },
+    ADDADDRESS_ADDRESS_CATEGORY_EMPTY: { "isSuccess": false, "code": 2045, "message":"home, comapny, etc 중 하나를 입력해주세요" },
+    ADDADDRESS_ADDRESS_ID_EMPTY: { "isSuccess": false, "code": 2046, "message":"userAddressId를 입력해주세요" },
+
+
 
     // Response error
     SIGNUP_REDUNDANT_PHONENUMBER : { "isSuccess": false, "code": 3001, "message":"중복된 전화번호입니다." },
@@ -73,6 +81,10 @@ module.exports = {
     NOT_EXIST_CART: { "isSuccess": false, "code": 3010, "message":"없는 카트입니다." },
 
     REVIEW_NOT_ORDER: { "isSuccess": false, "code": 3011, "message":"해당 유저는 이 메뉴를 주문하지 않아 리뷰를 작성할 수 없습니다." },
+
+    EMD_INVAILD_NAME: { "isSuccess": false, "code": 3012, "message":"유효하지 않은 이름입니다. 읍/면/동 이름을 입력해주세요" },
+
+    BOOKMARKS_REDUNDANT: { "isSuccess": false, "code": 3013, "message":"중복된 즐겨찾기입니다." },
 
 
     //Connection, Transaction 등의 서버 오류

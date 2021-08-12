@@ -89,9 +89,9 @@ exports.retrieveRestarurantsNoUser = async function () {
 };
 
 //골라먹는 맛집
-exports.retrievefamous = async function (userId, deliveryFee, minimunAmount) {
+exports.retrievefamous = async function (userId, deliveryFee, minimumAmount) {
   if (!deliveryFee) {
-    if (!minimunAmount) {
+    if (!minimumAmount) {
       // 1. C 치타배달 상관 X, D 배달비 상관 X, M 최소주문 상관 X
       const connection = await pool.getConnection(async (conn) => conn);
       const FamousResult = await userDao.selectFamous(connection, userId);
@@ -102,14 +102,14 @@ exports.retrievefamous = async function (userId, deliveryFee, minimunAmount) {
     } else {
       // 2. C 치타배달 상관 X, D 배달비 상관 X, M 최소주문 적용
       const connection = await pool.getConnection(async (conn) => conn);
-      const MFamousResult = await userDao.selectMFamous(connection, userId, minimunAmount);
+      const MFamousResult = await userDao.selectMFamous(connection, userId, minimumAmount);
       console.log('2번')
       connection.release();
 
       return MFamousResult;
     }
   } else {
-    if (!minimunAmount) {
+    if (!minimumAmount) {
       // 3. C 치타배달 상관 X, D 배달비 적용, M 최소주문 상관 X
       const connection = await pool.getConnection(async (conn) => conn);
       const DFamousResult = await userDao.selectDFamous(connection, userId, deliveryFee);
@@ -120,7 +120,7 @@ exports.retrievefamous = async function (userId, deliveryFee, minimunAmount) {
     } else {
       // 4. C 치타배달 상관 X, D 배달비 적용, M 최소주문 적용
       const connection = await pool.getConnection(async (conn) => conn);
-      const DMFamousResult = await userDao.selectDMFamous(connection, userId, deliveryFee, minimunAmount);
+      const DMFamousResult = await userDao.selectDMFamous(connection, userId, deliveryFee, minimumAmount);
       console.log('4번')
       connection.release();
 
@@ -128,9 +128,9 @@ exports.retrievefamous = async function (userId, deliveryFee, minimunAmount) {
     }
   }
 };
-exports.retrieveCheetahfamous = async function (userId, deliveryFee, minimunAmount) {
+exports.retrieveCheetahfamous = async function (userId, deliveryFee, minimumAmount) {
   if (!deliveryFee) {
-    if (!minimunAmount) {
+    if (!minimumAmount) {
       // 5. C 치타배달 o, D 배달비 상관 X, M 최소주문 상관 X
       const connection = await pool.getConnection(async (conn) => conn);
       const CFamousResult = await userDao.selectCFamous(connection, userId);
@@ -141,14 +141,14 @@ exports.retrieveCheetahfamous = async function (userId, deliveryFee, minimunAmou
     } else {
       // 6. C 치타배달 o, D 배달비 상관 X, M 최소주문 적용
       const connection = await pool.getConnection(async (conn) => conn);
-      const CMFamousResult = await userDao.selectCMFamous(connection, userId, minimunAmount);
+      const CMFamousResult = await userDao.selectCMFamous(connection, userId, minimumAmount);
       console.log('6번')
       connection.release();
 
       return CMFamousResult;
     }
   } else {
-    if (!minimunAmount) {
+    if (!minimumAmount) {
       // 7. C 치타배달 o, D 배달비 적용, M 최소주문 상관 X
       const connection = await pool.getConnection(async (conn) => conn);
       const CDFamousResult = await userDao.selectCDFamous(connection, userId, deliveryFee);
@@ -159,7 +159,7 @@ exports.retrieveCheetahfamous = async function (userId, deliveryFee, minimunAmou
     } else {
       // 8. C 치타배달 o, D 배달비 적용, M 최소주문 적용
       const connection = await pool.getConnection(async (conn) => conn);
-      const CDMFamousResult = await userDao.selectCDMFamous(connection, userId, deliveryFee, minimunAmount);
+      const CDMFamousResult = await userDao.selectCDMFamous(connection, userId, deliveryFee, minimumAmount);
       console.log('8번')
       connection.release();
 
@@ -168,9 +168,9 @@ exports.retrieveCheetahfamous = async function (userId, deliveryFee, minimunAmou
   }
 };
 // 인기 프랜차이즈
-exports.retrieveFranchise = async function (userId, deliveryFee, minimunAmount) {
+exports.retrieveFranchise = async function (userId, deliveryFee, minimumAmount) {
   if (!deliveryFee) {
-    if (!minimunAmount) {
+    if (!minimumAmount) {
       // 1. C 치타배달 상관 X, D 배달비 상관 X, M 최소주문 상관 X
       const connection = await pool.getConnection(async (conn) => conn);
       const franchiseResult = await userDao.selectFranchises(connection, userId);
@@ -181,14 +181,14 @@ exports.retrieveFranchise = async function (userId, deliveryFee, minimunAmount) 
     } else {
       // 2. C 치타배달 상관 X, D 배달비 상관 X, M 최소주문 적용
       const connection = await pool.getConnection(async (conn) => conn);
-      const MfranchiseResult = await userDao.selectMFranchises(connection, userId, minimunAmount);
+      const MfranchiseResult = await userDao.selectMFranchises(connection, userId, minimumAmount);
       console.log('2번')
       connection.release();
 
       return MfranchiseResult;
     }
   } else {
-    if (!minimunAmount) {
+    if (!minimumAmount) {
       // 3. C 치타배달 상관 X, D 배달비 적용, M 최소주문 상관 X
       const connection = await pool.getConnection(async (conn) => conn);
       const DfranchiseResult = await userDao.selectDFranchises(connection, userId, deliveryFee);
@@ -199,7 +199,7 @@ exports.retrieveFranchise = async function (userId, deliveryFee, minimunAmount) 
     } else {
       // 4. C 치타배달 상관 X, D 배달비 적용, M 최소주문 적용
       const connection = await pool.getConnection(async (conn) => conn);
-      const DMfranchiseResult = await userDao.selectDMFranchises(connection, userId, deliveryFee, minimunAmount);
+      const DMfranchiseResult = await userDao.selectDMFranchises(connection, userId, deliveryFee, minimumAmount);
       console.log('4번')
       connection.release();
 
@@ -207,9 +207,9 @@ exports.retrieveFranchise = async function (userId, deliveryFee, minimunAmount) 
     }
   }
 };
-exports.retrieveCheetahFranchise = async function (userId, deliveryFee, minimunAmount) {
+exports.retrieveCheetahFranchise = async function (userId, deliveryFee, minimumAmount) {
   if (!deliveryFee) {
-    if (!minimunAmount) {
+    if (!minimumAmount) {
       // 5. C 치타배달 o, D 배달비 상관 X, M 최소주문 상관 X
       const connection = await pool.getConnection(async (conn) => conn);
       const CfranchiseResult = await userDao.selectCFranchises(connection, userId);
@@ -220,14 +220,14 @@ exports.retrieveCheetahFranchise = async function (userId, deliveryFee, minimunA
     } else {
       // 6. C 치타배달 o, D 배달비 상관 X, M 최소주문 적용
       const connection = await pool.getConnection(async (conn) => conn);
-      const CMfranchiseResult = await userDao.selectCMFranchises(connection, userId, minimunAmount);
+      const CMfranchiseResult = await userDao.selectCMFranchises(connection, userId, minimumAmount);
       console.log('6번')
       connection.release();
 
       return CMfranchiseResult;
     }
   } else {
-    if (!minimunAmount) {
+    if (!minimumAmount) {
       // 7. C 치타배달 o, D 배달비 적용, M 최소주문 상관 X
       const connection = await pool.getConnection(async (conn) => conn);
       const CDfranchiseResult = await userDao.selectCDFranchises(connection, userId, deliveryFee);
@@ -238,7 +238,7 @@ exports.retrieveCheetahFranchise = async function (userId, deliveryFee, minimunA
     } else {
       // 8. C 치타배달 o, D 배달비 적용, M 최소주문 적용
       const connection = await pool.getConnection(async (conn) => conn);
-      const CDMfranchiseResult = await userDao.selectCDMFranchises(connection, userId, deliveryFee, minimunAmount);
+      const CDMfranchiseResult = await userDao.selectCDMFranchises(connection, userId, deliveryFee, minimumAmount);
       console.log('8번')
       connection.release();
 
@@ -247,9 +247,9 @@ exports.retrieveCheetahFranchise = async function (userId, deliveryFee, minimunA
   }
 };
 // 새로 들어왔어요 API
-exports.retrieveRecentlyOpen = async function (userId, deliveryFee, minimunAmount) {
+exports.retrieveRecentlyOpen = async function (userId, deliveryFee, minimumAmount) {
   if (!deliveryFee) {
-    if (!minimunAmount) {
+    if (!minimumAmount) {
       // 1. C 치타배달 상관 X, D 배달비 상관 X, M 최소주문 상관 X
       const connection = await pool.getConnection(async (conn) => conn);
       const RecentlyOpenResult = await userDao.selectRecentlyOpen(connection, userId);
@@ -260,14 +260,14 @@ exports.retrieveRecentlyOpen = async function (userId, deliveryFee, minimunAmoun
     } else {
       // 2. C 치타배달 상관 X, D 배달비 상관 X, M 최소주문 적용
       const connection = await pool.getConnection(async (conn) => conn);
-      const MRecentlyOpenResult = await userDao.selectMRecentlyOpen(connection, userId, minimunAmount);
+      const MRecentlyOpenResult = await userDao.selectMRecentlyOpen(connection, userId, minimumAmount);
       console.log('2번')
       connection.release();
 
       return MRecentlyOpenResult;
     }
   } else {
-    if (!minimunAmount) {
+    if (!minimumAmount) {
       // 3. C 치타배달 상관 X, D 배달비 적용, M 최소주문 상관 X
       const connection = await pool.getConnection(async (conn) => conn);
       const DRecentlyOpenResult = await userDao.selectDRecentlyOpen(connection, userId, deliveryFee);
@@ -278,7 +278,7 @@ exports.retrieveRecentlyOpen = async function (userId, deliveryFee, minimunAmoun
     } else {
       // 4. C 치타배달 상관 X, D 배달비 적용, M 최소주문 적용
       const connection = await pool.getConnection(async (conn) => conn);
-      const DMRecentlyOpenResult = await userDao.selectDMRecentlyOpen(connection, userId, deliveryFee, minimunAmount);
+      const DMRecentlyOpenResult = await userDao.selectDMRecentlyOpen(connection, userId, deliveryFee, minimumAmount);
       console.log('4번')
       connection.release();
 
@@ -286,9 +286,9 @@ exports.retrieveRecentlyOpen = async function (userId, deliveryFee, minimunAmoun
     }
   }
 };
-exports.retrieveCheetahRecentlyOpen = async function (userId, deliveryFee, minimunAmount) {
+exports.retrieveCheetahRecentlyOpen = async function (userId, deliveryFee, minimumAmount) {
   if (!deliveryFee) {
-    if (!minimunAmount) {
+    if (!minimumAmount) {
       // 5. C 치타배달 o, D 배달비 상관 X, M 최소주문 상관 X
       const connection = await pool.getConnection(async (conn) => conn);
       const CRecentlyOpenResult = await userDao.selectCRecentlyOpen(connection, userId);
@@ -299,14 +299,14 @@ exports.retrieveCheetahRecentlyOpen = async function (userId, deliveryFee, minim
     } else {
       // 6. C 치타배달 o, D 배달비 상관 X, M 최소주문 적용
       const connection = await pool.getConnection(async (conn) => conn);
-      const CMRecentlyOpenResult = await userDao.selectCMRecentlyOpen(connection, userId, minimunAmount);
+      const CMRecentlyOpenResult = await userDao.selectCMRecentlyOpen(connection, userId, minimumAmount);
       console.log('6번')
       connection.release();
 
       return CMRecentlyOpenResult;
     }
   } else {
-    if (!minimunAmount) {
+    if (!minimumAmount) {
       // 7. C 치타배달 o, D 배달비 적용, M 최소주문 상관 X
       const connection = await pool.getConnection(async (conn) => conn);
       const CDRecentlyOpenResult = await userDao.selectCDRecentlyOpen(connection, userId, deliveryFee);
@@ -317,7 +317,7 @@ exports.retrieveCheetahRecentlyOpen = async function (userId, deliveryFee, minim
     } else {
       // 8. C 치타배달 o, D 배달비 적용, M 최소주문 적용
       const connection = await pool.getConnection(async (conn) => conn);
-      const CDMRecentlyOpenResult = await userDao.selectCDMRecentlyOpen(connection, userId, deliveryFee, minimunAmount);
+      const CDMRecentlyOpenResult = await userDao.selectCDMRecentlyOpen(connection, userId, deliveryFee, minimumAmount);
       console.log('8번')
       connection.release();
 
@@ -344,13 +344,55 @@ exports.retrievemenu = async function (userId, restId) {
 exports.retrievemenuNoUser = async function (restId) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const restImageNoUserResult = await userDao.selectRestImageUrl(connection, restId);
-  const restInfoNoUserResult = await userDao.selectRestInfoNoUser(connection, restId); //
-  const reviewNoUserResult = await userDao.selectReview(connection, restId);
-  const menuNoUserResult = await userDao.selectMenu(connection, restId);
+  const restImageResult = await userDao.selectRestImageUrl(connection, restId);
+  const restInfoResult = await userDao.selectRestInfoNoUser(connection, restId); //
+  const reviewResult = await userDao.selectReview(connection, restId);
+  const menuResult = await userDao.selectMenu(connection, restId);
 
   connection.release();
-  return finalMenuResult = {restImageNoUserResult,restInfoNoUserResult,reviewNoUserResult,menuNoUserResult};
+  return finalMenuResult = {restImageResult,restInfoResult,reviewResult,menuResult};
 };
 
+// 유효한 읍/면/동 이름인지 확인
 
+exports.EMDCheck = async function (eupMyeonDongName) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const EMDCheckResult = await userDao.EMDCheck(connection, eupMyeonDongName);
+
+  connection.release();
+  return EMDCheckResult
+};
+
+// 유저 주소 목록 조회
+
+exports.getUserAddress = async function (userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const getUserAddressResult = await userDao.getUserAddress(connection, userId);
+
+  connection.release();
+  return getUserAddressResult[0]
+};
+
+// 즐겨찾기 중복
+
+exports.BookmarksCheck = async function (userId, restId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const BookmarksCheckResult = await userDao.BookmarksCheck(connection, userId, restId);
+
+  connection.release();
+  return BookmarksCheckResult[0]
+};
+
+// 즐겨찾기 목록 조회
+
+exports.getBookmarks = async function (userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const getBookmarksResult = await userDao.getBookmarks(connection, userId);
+
+  connection.release();
+  return getBookmarksResult[0]
+};

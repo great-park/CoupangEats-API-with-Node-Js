@@ -38,6 +38,23 @@ module.exports = function(app){
     // 16. 대표 결제 수단 변경 API
     app.patch('/app/users/:userId/payments', jwtMiddleware, user.patchReqPayment);
 
+    // 21. 배달지 목록 조회 API
+    app.get('/app/users/:userId/addresses', jwtMiddleware, user.getUserAddress);
+
+    // 22. 배달지 주소 추가 API
+    app.post('/app/users/:userId/addresses', jwtMiddleware, user.addUserAddress);
+
+    // 23. 배달지 주소 수정 API
+    app.patch('/app/users/:userId/addresses/:userAddressId', jwtMiddleware, user.patchUserAddress);
+
+    // 24. 즐겨찾기 등록 API
+    app.post('/app/users/:userId/bookmarks', jwtMiddleware, user.addBookmarks);
+
+    // 25. 즐겨찾기 목록 조회 API
+    app.get('/app/users/:userId/bookmarks', jwtMiddleware, user.getBookmarks);
+
+
+
 };
 
 

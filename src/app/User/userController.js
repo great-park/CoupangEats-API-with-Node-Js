@@ -72,7 +72,7 @@ exports.login = async function (req, res) {
 
     const {userEmail, password} = req.body;
 
-    // userEmail, password 형식적 Validation
+     
     // 빈 값 체크
     if (!userEmail)
         return res.send(response(baseResponse.SIGNIN_USEREMAIL_EMPTY));
@@ -139,19 +139,19 @@ exports.famous = async function (req, res) {
     const userId = req.params.userId;
 
     /**
-     * Query String: Cheetah, deliveryFee, minimunAmount
+     * Query String: Cheetah, deliveryFee, minimumAmount
      */
     const Cheetah = req.query.Cheetah;
     const deliveryFee = req.query.deliveryFee;
-    const minimunAmount = req.query.minimunAmount;
+    const minimumAmount = req.query.minimumAmount;
 
     if (Cheetah !== 'Y' ) {
         // 치타배달 상관 X
-        const famousResult = await userProvider.retrievefamous(userId, deliveryFee, minimunAmount);
+        const famousResult = await userProvider.retrievefamous(userId, deliveryFee, minimumAmount);
         return res.send(response(baseResponse.SUCCESS, famousResult));
 
     } else {
-        const CheetahfamousResult = await userProvider.retrieveCheetahfamous(userId, deliveryFee, minimunAmount);
+        const CheetahfamousResult = await userProvider.retrieveCheetahfamous(userId, deliveryFee, minimumAmount);
         return res.send(response(baseResponse.SUCCESS, CheetahfamousResult));
     }
 };
@@ -168,19 +168,19 @@ exports.franchise = async function (req, res) {
     const userId = req.params.userId;
 
     /**
-     * Query String: Cheetah, deliveryFee, minimunAmount
+     * Query String: Cheetah, deliveryFee, minimumAmount
      */
     const Cheetah = req.query.Cheetah;
     const deliveryFee = req.query.deliveryFee;
-    const minimunAmount = req.query.minimunAmount;
+    const minimumAmount = req.query.minimumAmount;
 
     if (Cheetah !== 'Y' ) {
         // 치타배달 상관 X
-        const franchiseResult = await userProvider.retrieveFranchise(userId, deliveryFee, minimunAmount);
+        const franchiseResult = await userProvider.retrieveFranchise(userId, deliveryFee, minimumAmount);
         return res.send(response(baseResponse.SUCCESS, franchiseResult));
 
     } else {
-        const CheetahFranchiseResult = await userProvider.retrieveCheetahFranchise(userId, deliveryFee, minimunAmount);
+        const CheetahFranchiseResult = await userProvider.retrieveCheetahFranchise(userId, deliveryFee, minimumAmount);
         return res.send(response(baseResponse.SUCCESS, CheetahFranchiseResult));
         }
 };
@@ -197,19 +197,19 @@ exports.recentlyOpen = async function (req, res) {
     const userId = req.params.userId;
 
     /**
-     * Query String: Cheetah, deliveryFee, minimunAmount
+     * Query String: Cheetah, deliveryFee, minimumAmount
      */
     const Cheetah = req.query.Cheetah;
     const deliveryFee = req.query.deliveryFee;
-    const minimunAmount = req.query.minimunAmount;
+    const minimumAmount = req.query.minimumAmount;
 
     if (Cheetah !== 'Y' ) {
         // 치타배달 상관 X
-        const recentlyOpenResult = await userProvider.retrieveRecentlyOpen(userId, deliveryFee, minimunAmount);
+        const recentlyOpenResult = await userProvider.retrieveRecentlyOpen(userId, deliveryFee, minimumAmount);
         return res.send(response(baseResponse.SUCCESS, recentlyOpenResult));
 
     } else {
-        const CheetahRecentlyOpenResult = await userProvider.retrieveCheetahRecentlyOpen(userId, deliveryFee, minimunAmount);
+        const CheetahRecentlyOpenResult = await userProvider.retrieveCheetahRecentlyOpen(userId, deliveryFee, minimumAmount);
         return res.send(response(baseResponse.SUCCESS, CheetahRecentlyOpenResult));
     }
 };
@@ -330,11 +330,178 @@ exports.patchReqPayment = async function (req, res) {
     }
 };
 
+/**
+ * API No. 21
+ * API Name : 배달지 주소 목록 조회 API
+ * [GET] /app/users/:userId/addresses
+ */
+exports.getUserAddress = async function (req, res) {
+    /**
+     * Path variable: userId
+     */
+
+    const userIdFromJWT = req.verifiedToken.userId
+    const userId = req.params.userId;
+    
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        const getUserAddress = await userProvider.getUserAddress(userId);
+        return res.send(response(baseResponse.SUCCESS, getUserAddress));
+
+    }
 
 
+};
 
 
+/**
+ * API No. 22
+ * API Name : 배달지 주소 추가 API
+ * [POST] /app/users/:userId/addresses
+ * body : eupMyeonDongName, detailAddress,addressCategory, introduction
+ */
+exports.addUserAddress = async function (req, res) {
+    /**
+     * Path variable: userId
+     */
 
+    const userIdFromJWT = req.verifiedToken.userId
+    const userId = req.params.userId;
+    const {eupMyeonDongName, detailAddress, addressCategory, introduction} = req.body;
+
+     
+    // 빈 값 체크
+    if (!eupMyeonDongName)
+        return res.send(response(baseResponse.ADDADDRESS_EMD_NAME_EMPTY));
+    if (!detailAddress)
+        return res.send(response(baseResponse.ADDADDRESS_DETAIL_ADDRESS_EMPTY));
+    if (!addressCategory)
+        return res.send(response(baseResponse.ADDADDRESS_ADDRESS_CATEGORY_EMPTY));
+
+    // 길이 체크
+    if (detailAddress.length > 50)
+        return res.send(response(baseResponse.ADDADDRESS_DETAIL_ADDRESS_LENGTH));
+    if (typeof(introduction) !== 'undefined') {
+        if (introduction.length > 100)
+            return res.send(response(baseResponse.ADDADDRESS_INTRODUCTION_LENGTH));
+    }
+
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        if (!introduction){
+            const addUserAddress = await userService.addUserAddress(userId,eupMyeonDongName, detailAddress, addressCategory);
+            console.log(addUserAddress)
+            return res.send(addUserAddress);
+
+        } else{
+            const addUserAddress = await userService.addUserAddress(userId,eupMyeonDongName, detailAddress, addressCategory, introduction);
+            console.log(addUserAddress)
+            return res.send(addUserAddress);
+        }
+    }
+};
+
+/**
+ * API No. 23
+ * API Name : 배달지 주소 수정 API
+ * [PATCH] /app/users/:userId/addresses/:userAddressId
+ * body : eupMyeonDongName, detailAddress,addressCategory, introduction
+ */
+exports.patchUserAddress = async function (req, res) {
+    /**
+     * Path variable: userId, userAddressId
+     */
+
+    const userIdFromJWT = req.verifiedToken.userId
+    const userId = req.params.userId;
+    const userAddressId = req.params.userAddressId;
+    const {eupMyeonDongName, detailAddress, addressCategory, introduction} = req.body;
+
+
+    // 빈 값 체크
+    if (!eupMyeonDongName)
+        return res.send(response(baseResponse.ADDADDRESS_EMD_NAME_EMPTY));
+    if (!detailAddress)
+        return res.send(response(baseResponse.ADDADDRESS_DETAIL_ADDRESS_EMPTY));
+    if (!addressCategory)
+        return res.send(response(baseResponse.ADDADDRESS_ADDRESS_CATEGORY_EMPTY));
+    if (!userAddressId)
+        return res.send(response(baseResponse.ADDADDRESS_ADDRESS_ID_EMPTY));
+
+    // 길이 체크
+    if (detailAddress.length > 50)
+        return res.send(response(baseResponse.ADDADDRESS_DETAIL_ADDRESS_LENGTH));
+    if (typeof(introduction) !== 'undefined') {
+        if (introduction.length > 100)
+            return res.send(response(baseResponse.ADDADDRESS_INTRODUCTION_LENGTH));
+    }
+
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        const patchUserAddress = await userService.patchUserAddress(eupMyeonDongName, detailAddress, addressCategory, introduction, userAddressId, userId);
+        console.log(patchUserAddress)
+        return res.send(patchUserAddress);
+    }
+};
+
+
+/**
+ * API No. 24
+ * API Name : 즐겨찾기 추가 API
+ * [POST] /app/users/:userId/bookmarks
+ * body : restId
+ */
+exports.addBookmarks = async function (req, res) {
+    /**
+     * Path variable: userId
+     */
+
+    const userIdFromJWT = req.verifiedToken.userId
+    const userId = req.params.userId;
+    const {restId} = req.body;
+
+
+    // 빈 값 체크
+    if (!userId)
+        return res.send(response(baseResponse.REPPAY_USERID_EMPTY));
+    if (!restId)
+        return res.send(response(baseResponse.REVIEW_RESTID_EMPTY));
+
+
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        const addBookmarks = await userService.addBookmarks(userId,restId);
+        console.log(addBookmarks)
+        return res.send(addBookmarks);
+
+    }
+};
+
+
+/**
+ * API No. 25
+ * API Name : 즐겨찾기 목록 조회 API
+ * [GET] /app/users/:userId/addresses
+ */
+exports.getBookmarks = async function (req, res) {
+    /**
+     * Path variable: userId
+     */
+
+    const userIdFromJWT = req.verifiedToken.userId
+    const userId = req.params.userId;
+
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        const getBookmarks = await userProvider.getBookmarks(userId);
+        return res.send(response(baseResponse.SUCCESS, getBookmarks));
+    }
+};
 
 
 
