@@ -121,7 +121,7 @@ async function selectUserDefaultAddress(connection, userId) {
                eupMyeonDongCode, userLatitude, userLongitude
         from UserAddress
                  inner join DefaultAddress DA on UserAddress.userAddressId = DA.userAddressId
-        where UserAddress.status = 'Y';
+        where UserAddress.status = 'Y' and userId = ?;
         `;
     const [selectUserDefaultAddressRow] = await connection.query(
         selectUserDefaultAddressQuery,
