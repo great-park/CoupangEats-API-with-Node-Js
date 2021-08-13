@@ -44,10 +44,12 @@ exports.increaseBad = async function (restId, reviewId) {
     }
 }
 
+// 리뷰 작성
 exports.postReview = async function (restId,userId, menuId, reviewContent, reviewImageUrl, star) {
     try {
         // 해당 유저가 이 메뉴를 시킨 적이 있는지 확인
         const userOrderCheckRows = await restaurantProvider.userOrderCheck(userId, menuId); //
+        console.log(userOrderCheckRows)
         if (userOrderCheckRows.length === 0)
             return errResponse(baseResponse.REVIEW_NOT_ORDER); //
 

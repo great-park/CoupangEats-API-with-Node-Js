@@ -41,7 +41,7 @@ async function selectRestAdditionalMenu(connection, menuId) {
                         then additionalMenuContents
                     else
                         CONCAT(additionalMenuContents,'(+',additionalMenuPrice,'원)') end as additionalMenuContents,
-               additionalMenuPrice
+               additionalMenuPrice, additionalMenuId
         from AdditionalMenu inner join Menu M on AdditionalMenu.subMenuCategory = M.subMenuCategory
         where menuId = ?;
         `;
@@ -120,7 +120,7 @@ async function postReview(connection,restId, menuId, userId, reviewContent, revi
     return postReviewRow;
 }
 
-
+// 결제했는지 체크
 async function userOrderCheck(connection, userId, menuId) {
     const userOrderCheckQuery = `
         select userId, C.cartId, menuId

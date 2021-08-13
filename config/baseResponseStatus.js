@@ -62,6 +62,15 @@ module.exports = {
     ADDADDRESS_ADDRESS_CATEGORY_EMPTY: { "isSuccess": false, "code": 2045, "message":"home, comapny, etc 중 하나를 입력해주세요" },
     ADDADDRESS_ADDRESS_ID_EMPTY: { "isSuccess": false, "code": 2046, "message":"userAddressId를 입력해주세요" },
 
+    USERID_NOT_INT: { "isSuccess": false, "code": 2047, "message":"userId를 정수값으로 입력해주세요" },
+    USERID_NOT_POSITIVE: { "isSuccess": false, "code": 2048, "message":"userId를 양의 정수로 입력해주세요" },
+
+    USERADDRESSID_NOT_INT: { "isSuccess": false, "code": 2049, "message":"userAddressId를 정수값으로 입력해주세요" },
+    USERADDRESSID_NOT_POSITIVE: { "isSuccess": false, "code": 2050, "message":"userAddressId를 양의 정수로 입력해주세요" },
+
+    SEARCH_CONTENT_EMPTY: { "isSuccess": false, "code": 2051, "message":"searchContent를 입력해주세요" },
+    SEARCH_CONTENT_LENGTH: { "isSuccess": false, "code": 2051, "message":"searchContent는 45자 이내로 입력해주세요" },
+
 
 
     // Response error
@@ -85,6 +94,8 @@ module.exports = {
     EMD_INVAILD_NAME: { "isSuccess": false, "code": 3012, "message":"유효하지 않은 이름입니다. 읍/면/동 이름을 입력해주세요" },
 
     BOOKMARKS_REDUNDANT: { "isSuccess": false, "code": 3013, "message":"중복된 즐겨찾기입니다." },
+
+    USERADDRESSID_INVALID: { "isSuccess": false, "code": 3014, "message":"존재하지 않는 userAddressId입니다." },
 
 
     //Connection, Transaction 등의 서버 오류

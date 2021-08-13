@@ -447,9 +447,55 @@ exports.patchUserAddress = async function (req, res) {
     }
 };
 
-
 /**
  * API No. 24
+ * API Name : 배달지 삭제 API
+ * [PATCH] /app/users/:userId/delete-addresses/:userAddressId
+ */
+exports.deleteUserAddress = async function (req, res) {
+    /**
+     * Path variable: userId, userAddressId
+     */
+
+    const userIdFromJWT = req.verifiedToken.userId
+    const userId = req.params.userId;
+    const userAddressId = req.params.userAddressId;
+
+    parseInt(userId)
+
+    // 빈 값 체크
+    if (!userId)
+        return res.send(response(baseResponse.REPPAY_USERID_EMPTY));
+    if (!userAddressId)
+        return res.send(response(baseResponse.ADDADDRESS_ADDRESS_ID_EMPTY));
+    // console.log(userId);
+    //     // console.log(typeof userId);
+    //     // // 인덱스 양의 정수 체크
+    //     // if (Number.isInteger(userId) === false){
+    //     //     return res.send(response(baseResponse.USERID_NOT_INT));
+    //     // }
+    //     // if (isPositive(userId) === false){
+    //     //     return res.send(response(baseResponse.USERID_NOT_POSITIVE));
+    //     // }
+    //     // if (Number.isInteger(userAddressId) === false){
+    //     //     return res.send(response(baseResponse.USERADDRESSID_NOT_INT));
+    //     // }
+    //     // if (isPositive(userAddressId) === false){
+    //     //     return res.send(response(baseResponse.USERADDRESSID_NOT_POSITIVE));
+    //     // }
+
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        const deleteUserAddress = await userService.deleteUserAddress(userId, userAddressId);
+        console.log(deleteUserAddress)
+        return res.send(deleteUserAddress);
+    }
+};
+
+
+/**
+ * API No. 25
  * API Name : 즐겨찾기 추가 API
  * [POST] /app/users/:userId/bookmarks
  * body : restId
@@ -462,6 +508,7 @@ exports.addBookmarks = async function (req, res) {
     const userIdFromJWT = req.verifiedToken.userId
     const userId = req.params.userId;
     const {restId} = req.body;
+    console.log("진입")
 
 
     // 빈 값 체크
@@ -483,7 +530,7 @@ exports.addBookmarks = async function (req, res) {
 
 
 /**
- * API No. 25
+ * API No. 26
  * API Name : 즐겨찾기 목록 조회 API
  * [GET] /app/users/:userId/addresses
  */
@@ -495,6 +542,13 @@ exports.getBookmarks = async function (req, res) {
     const userIdFromJWT = req.verifiedToken.userId
     const userId = req.params.userId;
 
+    // 빈값확인
+    if (!userId)
+        return res.send(response(baseResponse.REPPAY_USERID_EMPTY)); // 30
+    // 숫자 확인
+    if (isNaN(userId) === true)
+        return res.send(response(baseResponse.REPPAY_USERID_NOTNUM)); // 31
+
     if (userIdFromJWT != userId) {
         res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
     } else {
@@ -505,6 +559,112 @@ exports.getBookmarks = async function (req, res) {
 
 
 
+
+/**
+ * API No. 27
+ * API Name : 검색 API
+ * [GET] /app/users/:userId/addresses
+ */
+exports.search = async function (req, res) {
+    /**
+     * Path variable: userId
+     */
+    /**
+     * Body: searchContent
+     */
+
+    const userIdFromJWT = req.verifiedToken.userId
+    const userId = req.params.userId;
+    const {searchContent} = req.body;
+
+    // 빈 값 체크
+    if (!userId)
+        return res.send(response(baseResponse.REPPAY_USERID_EMPTY)); // 30
+    if (!searchContent)
+        return res.send(response(baseResponse.SEARCH_CONTENT_EMPTY)); // 51
+
+    // 길이 체크
+    if (searchContent.length > 45)
+        return res.send(response(baseResponse.SEARCH_CONTENT_LENGTH)); // 52
+
+    // 숫자 확인
+    if (isNaN(userId) === true)
+        return res.send(response(baseResponse.REPPAY_USERID_NOTNUM)); // 31
+
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        const searchResult = await userProvider.search(userId, searchContent);
+        return res.send(response(baseResponse.SUCCESS, searchResult));
+    }
+};
+
+/**
+ * API No. 28
+ * API Name : 인기 검색어 조회 API
+ * [GET] /app/users/searches/popular
+ */
+exports.popularSearch = async function (req, res) {
+
+    const popularSearchResult = await userProvider.popularSearch();
+    return res.send(response(baseResponse.SUCCESS, popularSearchResult));
+
+};
+
+/**
+ * API No. 29
+ * API Name : 최근 검색어 조회 API
+ * [GET] /app/users/:userId/searches/recent
+ */
+exports.recentSearch = async function (req, res) {
+    /**
+     * Path variable: userId
+     */
+
+    const userIdFromJWT = req.verifiedToken.userId
+    const userId = req.params.userId;
+    // 빈 값 체크
+    if (!userId)
+        return res.send(response(baseResponse.REPPAY_USERID_EMPTY)); // 30
+    // 숫자 확인
+    if (isNaN(userId) === true)
+        return res.send(response(baseResponse.REPPAY_USERID_NOTNUM)); // 31
+
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        const recentSearchResult = await userProvider.recentSearch(userId);
+        return res.send(response(baseResponse.SUCCESS, recentSearchResult));
+    }
+};
+
+
+/**
+ * API No. 30
+ * API Name : 주문내역 조회 API
+ * [GET] /app/users/:userId/searches/recent
+ */
+exports.orderList = async function (req, res) {
+    /**
+     * Path variable: userId
+     */
+
+    const userIdFromJWT = req.verifiedToken.userId
+    const userId = req.params.userId;
+    // 빈 값 체크
+    if (!userId)
+        return res.send(response(baseResponse.REPPAY_USERID_EMPTY)); // 30
+    // 숫자 확인
+    if (isNaN(userId) === true)
+        return res.send(response(baseResponse.REPPAY_USERID_NOTNUM)); // 31
+
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        const orderListResult = await userProvider.orderList(userId);
+        return res.send(response(baseResponse.SUCCESS, orderListResult));
+    }
+};
 
 // /** JWT 토큰 검증 API
 //  * [GET] /app/auto-login

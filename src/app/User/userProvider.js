@@ -396,3 +396,56 @@ exports.getBookmarks = async function (userId) {
   connection.release();
   return getBookmarksResult[0]
 };
+
+// 유저 주소 인덱스 존재 확인
+
+exports.userAddresIdCheck = async function (userAddressId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const userAddresIdCheckResult = await userDao.userAddresIdCheck(connection, userAddressId);
+
+  connection.release();
+  return userAddresIdCheckResult[0]
+};
+
+// 검색
+exports.search = async function (userId, searchContent) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const searchResult = await userDao.search(connection, userId, searchContent); //
+  const searchRecordResult = await userDao.searchRecord(connection,userId, searchContent); //
+
+  connection.release();
+  return searchResult[0]
+};
+
+// 인기 검색어
+
+exports.popularSearch = async function () {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const popularSearchResult = await userDao.popularSearch(connection); //
+
+  connection.release();
+  return popularSearchResult[0]
+};
+
+// 최근 검색어
+exports.recentSearch = async function (userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const recentSearchResult = await userDao.recentSearch(connection, userId);
+
+  connection.release();
+  return recentSearchResult[0]
+};
+
+// 주문내역 조회
+exports.orderList = async function (userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const orderListResult = await userDao.orderList(connection, userId);
+
+  connection.release();
+  return orderListResult[0]
+};

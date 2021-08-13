@@ -15,7 +15,9 @@ module.exports = {
     selectRestInfo, selectRestInfoNoUser, selectRestImageUrl, selectReview, selectMenu,
     updateDefaultAddress,
     updatePaymentAccount, updatePaymentCard, initializationPayment, EMDCheck, addUserAddressNoI, addUserAddress,
-    getUserAddress, patchUserAddressNoI, patchUserAddress, addBookmarks, BookmarksCheck, getBookmarks
+    getUserAddress, patchUserAddressNoI, patchUserAddress, addBookmarks, BookmarksCheck, getBookmarks, userAddresIdCheck,
+    deleteUserAddress,
+    search, searchRecord, popularSearch, recentSearch, orderList
 };
 
 async function selectTestData(connection) {
@@ -118,7 +120,8 @@ async function selectUserDefaultAddress(connection, userId) {
                    end as homeAddress,
                eupMyeonDongCode, userLatitude, userLongitude
         from UserAddress
-                 inner join DefaultAddress DA on UserAddress.userAddressId = DA.userAddressId;
+                 inner join DefaultAddress DA on UserAddress.userAddressId = DA.userAddressId
+        where UserAddress.status = 'Y';
         `;
     const [selectUserDefaultAddressRow] = await connection.query(
         selectUserDefaultAddressQuery,
@@ -172,7 +175,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and categoryId = 25 and (star > 4.5)
@@ -226,7 +229,7 @@ async function selectRecentlyOpen(connection, userId) {
           
 AS distance_KM
                              FROM Restaurant, UserAddress
-                             where userId = ?
+                             where userId = ? and UserAddress.status = 'Y'
                              ORDER BY distance_KM) DistanceInfo
                  inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
         where distance_KM < 20 and (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1
@@ -281,7 +284,7 @@ async function selectFamous(connection, userId) {
 
 AS distance_KM
                              FROM Restaurant, UserAddress
-                             where userId = ?
+                             where userId = ? and UserAddress.status = 'Y'
                              ORDER BY distance_KM) DistanceInfo
 
                  inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
@@ -334,7 +337,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and minimumAmount < ?
@@ -366,7 +369,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and Restaurant.deliveryFee < ?
@@ -398,7 +401,7 @@ inner join (SELECT userId, userAddressId,restId,
           
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and Restaurant.deliveryFee < ?  and minimumAmount < ?
@@ -430,7 +433,7 @@ inner join (SELECT userId, userAddressId,restId,
           
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and Cheetah = 'Y'
@@ -462,7 +465,7 @@ inner join (SELECT userId, userAddressId,restId,
           
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and minimumAmount < ? and Cheetah = 'Y'
@@ -494,7 +497,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and Restaurant.deliveryFee < ? and Cheetah = 'Y'
@@ -526,7 +529,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and Restaurant.deliveryFee < ? and minimumAmount < ? and Cheetah = 'Y'
@@ -560,7 +563,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and categoryId = 25 and (star > 4.5) and minimumAmount < ?
@@ -592,7 +595,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and categoryId = 25 and (star > 4.5) and Restaurant.deliveryFee < ?
@@ -624,7 +627,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and categoryId = 25 and (star > 4.5) and Restaurant.deliveryFee < ?  and minimumAmount < ?
@@ -656,7 +659,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and categoryId = 25 and (star > 4.5) and Cheetah = 'Y'
@@ -688,7 +691,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and categoryId = 25 and (star > 4.5)  and minimumAmount < ? and Cheetah = 'Y'
@@ -720,7 +723,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and categoryId = 25 and (star > 4.5)  and Restaurant.deliveryFee < ? and Cheetah = 'Y'
@@ -752,7 +755,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and categoryId = 25 and (star > 4.5)  and Restaurant.deliveryFee < ? and minimumAmount < ? and Cheetah = 'Y'
@@ -784,7 +787,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1 and minimumAmount < ?
@@ -816,7 +819,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1 and Restaurant.deliveryFee < ?
@@ -848,7 +851,7 @@ inner join (SELECT userId, userAddressId,restId,
           
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1 and Restaurant.deliveryFee < ?  and minimumAmount < ?
@@ -880,7 +883,7 @@ inner join (SELECT userId, userAddressId,restId,
           
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1 and Cheetah = 'Y'
@@ -912,7 +915,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1  and minimumAmount < ? and Cheetah = 'Y'
@@ -944,7 +947,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1 and Restaurant.deliveryFee < ? and Cheetah = 'Y'
@@ -976,7 +979,7 @@ inner join (SELECT userId, userAddressId,restId,
            
 AS distance_KM
 FROM Restaurant, UserAddress
-where userId = ?
+where userId = ? and UserAddress.status = 'Y'
 ORDER BY distance_KM) DistanceInfo
 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
 where distance_KM < 20 and (TIMESTAMPDIFF(MONTH ,Restaurant.createdAt, CURRENT_TIMESTAMP)) < 1  and Restaurant.deliveryFee < ? and minimumAmount < ? and Cheetah = 'Y'
@@ -1021,7 +1024,7 @@ async function selectRestInfo(connection, userId, restId) {
         from Restaurant
                  left outer join Review R on Restaurant.restId = R.restId
                  inner join UserAddress UA on R.userId = UA.userId
-        where UA.userId = ? and Restaurant.restId = ?
+        where UA.userId = ? and Restaurant.restId = ? and UA.status = 'Y'
         group by R.restId;
         `;
     const [selectRestInfoRow] = await connection.query(
@@ -1172,7 +1175,7 @@ async function getUserAddress(connection,userId) {
                  inner join EupMyeonDong EMD on UA.eupMyeonDongCode = EMD.eupMyeonDongCode
                  inner join SiGunGu SGG on EMD.siGunGuCode = SGG.sigunguCode
                  inner join SiDo SD on SGG.sidoId = SD.siDoId
-        where userId = ?;
+        where userId = ? and UA.status = 'Y';
   `;
     const getUserAddressRow = await connection.query(getUserAddressQuery, userId);
     return getUserAddressRow;
@@ -1254,7 +1257,7 @@ async function getBookmarks(connection, userId) {
 
 AS distance_KM
                              FROM Restaurant, UserAddress
-                             where userId = ?
+                             where userId = ? and UserAddress.status = 'Y'
                              ORDER BY distance_KM) DistanceInfo
                  inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
                  inner join Bookmarks B on CPR.restId = B.restId
@@ -1266,4 +1269,103 @@ AS distance_KM
     );
 
     return getBookmarksRow;
+}
+
+// 유저 주소 인덱스 존재 확인
+async function userAddresIdCheck(connection, userAddressId) {
+    const userAddresIdCheckQuery = `
+        select userAddressId from UserAddress where userAddressId = ?;
+  `;
+    const userAddresIdCheckRow = await connection.query(userAddresIdCheckQuery,userAddressId);
+
+    return userAddresIdCheckRow;
+}
+
+// 배달 주소지 삭제 ( status를 Y에서 N으로)
+async function deleteUserAddress(connection, userId ,userAddressId) {
+    const deleteUserAddressQuery = `
+        Update UserAddress Set status = 'N' where userId = ? and userAddressId = ?;
+  `;
+    const deleteUserAddressRow = await connection.query(deleteUserAddressQuery,[userId, userAddressId]);
+
+    return deleteUserAddressRow;
+}
+
+// 검색
+async function search(connection, userId, searchContent) {
+    const searchQuery = `
+        select Restaurant.restId, DistanceInfo.userId, restName, repRestImageUrl, restIcon, Cheetah,
+               case when deliveryFee = 0
+                        then '무료'
+                    else CONCAT(FORMAT(deliveryFee, 0), '원') end as deliveryFee
+                , star, count(reviewId) as reviewCount, distance_KM
+        from Restaurant
+                 left outer join Review R on Restaurant.restId = R.restId
+                 inner join (SELECT userId, userAddressId,restId,
+                                    #거리계산
+
+                                 left((6371 * acos(cos(radians(userLatitude)) * cos(radians(restLatitude)) *
+                                 cos(radians(restLongitude) - radians(userLongitude)) +
+                                 sin(radians(userLatitude)) * sin(radians(restLatitude)))), 4)
+
+AS distance_KM
+                             FROM Restaurant, UserAddress
+                             where userId = ? and UserAddress.status = 'Y'
+                             ORDER BY distance_KM) DistanceInfo
+                 inner join CategoryPerRest CPR on Restaurant.restId = CPR.restId
+        where distance_KM < 20 and restName LIKE Concat('%',?,'%')
+        group by restId order by rand();
+  `;
+    const searchRow = await connection.query(searchQuery,[userId, searchContent]);
+
+    return searchRow;
+}
+
+
+// 검색기록 저장
+async function searchRecord(connection, userId, searchContent) {
+    const searchRecordQuery = `
+        insert into SearchRecord(userId, searchContent) values (?,?);
+  `;
+    const searchRecordRow = await connection.query(searchRecordQuery,[userId, searchContent]);
+
+    return searchRecordRow;
+}
+
+
+// 인기 검색어
+async function popularSearch(connection) {
+    const popularSearchQuery = `
+        select searchContent,Count(searchId) From SearchRecord group by searchContent order by COUNT(searchId) DESC;
+  `;
+    const popularSearchRow = await connection.query(popularSearchQuery);
+
+    return popularSearchRow;
+}
+
+
+// 최근 검색어
+async function recentSearch(connection, userId) {
+    const recentSearchQuery = `
+        select searchContent, date_format(createdAt, '%m-%d') as date 
+        from SearchRecord where userId = ? group by searchContent;
+  `;
+    const recentSearchRow = await connection.query(recentSearchQuery, userId);
+
+    return recentSearchRow;
+}
+
+// 주문내역 조회
+async function orderList(connection, userId) {
+    const orderListQuery = `
+        select menuName, CONCAT(menuCount, '개') as menuCount, C.createdAt
+        from \`Order\`
+                 inner join MenuPerCart MPC on \`Order\`.cartId = MPC.cartId
+                 inner join Cart C on \`Order\`.cartId = C.cartId
+                 inner join Menu M on MPC.menuId = M.menuId
+        where userId = ?;
+  `;
+    const orderListRow = await connection.query(orderListQuery, userId);
+
+    return orderListRow;
 }

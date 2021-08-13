@@ -41,17 +41,32 @@ module.exports = function(app){
     // 21. 배달지 목록 조회 API
     app.get('/app/users/:userId/addresses', jwtMiddleware, user.getUserAddress);
 
-    // 22. 배달지 주소 추가 API
+    // 22. 배달지 추가 API
     app.post('/app/users/:userId/addresses', jwtMiddleware, user.addUserAddress);
 
-    // 23. 배달지 주소 수정 API
+    // 23. 배달지 수정 API
     app.patch('/app/users/:userId/addresses/:userAddressId', jwtMiddleware, user.patchUserAddress);
 
-    // 24. 즐겨찾기 등록 API
+    // 24. 배달지 삭제 API
+    app.patch('/app/users/:userId/delete-addresses/:userAddressId', jwtMiddleware, user.deleteUserAddress);
+
+    // 25. 즐겨찾기 등록 API
     app.post('/app/users/:userId/bookmarks', jwtMiddleware, user.addBookmarks);
 
-    // 25. 즐겨찾기 목록 조회 API
+    // 26. 즐겨찾기 목록 조회 API
     app.get('/app/users/:userId/bookmarks', jwtMiddleware, user.getBookmarks);
+
+    // 27. 검색, 검색기록 저장 API
+    app.get('/app/users/:userId/searches', jwtMiddleware, user.search);
+
+    // 28. 인기 검색어 API
+    app.get('/app/users/searches/popular', user.popularSearch);
+
+    // 29. 최근 검색어 API
+    app.get('/app/users/:userId/searches/recent',jwtMiddleware, user.recentSearch);
+
+    // 30. 주문내역 API
+    app.get('/app/users/:userId/order-lists',jwtMiddleware, user.orderList);
 
 
 

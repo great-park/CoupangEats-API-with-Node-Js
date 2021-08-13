@@ -33,6 +33,7 @@ exports.getReview = async function (restId) {
     return getReviewResult;
 };
 
+// 결제했는지 체크
 exports.userOrderCheck = async function (userId, menuId) {
     const connection = await pool.getConnection(async (conn) => conn);
 

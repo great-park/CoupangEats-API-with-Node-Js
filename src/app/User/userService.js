@@ -210,6 +210,7 @@ exports.addBookmarks = async function (userId,restId) {
     try {
         //즐겨찾기 중복 확인
         const BookmarksRows = await userProvider.BookmarksCheck(userId, restId);
+        console.log(BookmarksRows)
         if (BookmarksRows.length > 0)
             return errResponse(baseResponse.BOOKMARKS_REDUNDANT);
 
@@ -220,6 +221,26 @@ exports.addBookmarks = async function (userId,restId) {
         return response(baseResponse.SUCCESS);
     } catch (err) {
         logger.error(`App - addBookmarks Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 배달지 삭제
+
+exports.deleteUserAddress = async function (userId, userAddressId) {
+    try {
+        //존재하는 userAddresId인지 확인
+        const userAddresIdRows = await userProvider.userAddresIdCheck(userAddressId);
+        if (userAddresIdRows.length === 0)
+            return errResponse(baseResponse.USERADDRESSID_INVALID);
+
+        const connection = await pool.getConnection(async (conn) => conn);
+
+        const deleteUserAddressResult = await userDao.deleteUserAddress(connection,userId,userAddressId);
+        connection.release();
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - deleteUserAddress Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
     }
 }

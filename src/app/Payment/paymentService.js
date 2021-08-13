@@ -20,7 +20,9 @@ exports.addOrder = async function (cartId, reqManager, reqDelivery, disposableCh
         if (cartIdRows.length > 0)
             return errResponse(baseResponse.ADDORDER_REDUNDANT_CARTID);
 
-        if (!userCouponId) {
+        // cart가 존재하는지 확인인
+
+       if (!userCouponId) {
             const connection = await pool.getConnection(async (conn) => conn);
             const addOrderNoCouponParams =[cartId, reqManager, reqDelivery, disposableCheck];
             const addTotalPayPriceParams =[cartId, cartId];
