@@ -6,6 +6,7 @@ const {response, errResponse} = require("../../../config/response");
 const regexEmail = require("regex-email");
 const {emit} = require("nodemon");
 
+
 /**
  * API No. 0
  * API Name : 테스트 API, RDS 연결 확인
@@ -665,6 +666,24 @@ exports.orderList = async function (req, res) {
         return res.send(response(baseResponse.SUCCESS, orderListResult));
     }
 };
+
+/**
+ * API No. 31
+ * API Name : 카카오 소셜 로그인 API
+ */
+const passport = require('passport');
+const KakaoStrategy = require('passport-kakao').Strategy;
+
+passport.use('kakao-login', new KakaoStrategy({
+    clientID: '7ece5a1f387ccef0bcf823f803e2b465',
+    callbackURL: 'https://localhost:3000/kakao/oauth',
+}, async (accessToken, refreshToken, profile, done) => {
+    console.log(accessToken); console.log(profile);
+}));
+
+
+
+
 
 // /** JWT 토큰 검증 API
 //  * [GET] /app/auto-login
