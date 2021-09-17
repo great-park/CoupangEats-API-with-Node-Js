@@ -71,7 +71,7 @@ module.exports = function(app){
     // 31. 카카오 소셜 로그인  API
     app.get('/kakao', passport.authenticate('kakao-login'));
 
-    app.get('/auth/kakao/callback', passport.authenticate('kakao-login', { failureRedirect: '/', }), (req, res) => { res.redirect('/');
+    app.get('/kakao/oauth', passport.authenticate('kakao-login', { failureRedirect: '/', }), (req, res) => { res.redirect('/');
         });
 
 };

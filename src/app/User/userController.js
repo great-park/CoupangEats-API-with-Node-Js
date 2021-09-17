@@ -675,8 +675,8 @@ const passport = require('passport');
 const KakaoStrategy = require('passport-kakao').Strategy;
 
 passport.use('kakao-login', new KakaoStrategy({
-    clientID: '7ece5a1f387ccef0bcf823f803e2b465',
-    callbackURL: 'https://localhost:3000/kakao/oauth',
+    clientID: '3a6baddf50b045d0c3593cbd288c61b1',
+    callbackURL: 'http://localhost:3000/kakao/oauth',
 }, async (accessToken, refreshToken, profile, done) => {
     console.log(accessToken); console.log(profile);
 }));
