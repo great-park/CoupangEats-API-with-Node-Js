@@ -121,4 +121,7 @@ Password : 1t27pd
 - 2순위 지도 api 연동
 - 3순위 API 추가 및 수정
 
+## 9/17
+- 카카오 소셜 로그인 response 정상, redirect Url 
+
   
