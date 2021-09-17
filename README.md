@@ -123,5 +123,6 @@ Password : 1t27pd
 
 ## 9/17
 - 카카오 소셜 로그인 response 정상, redirect Url 
-
+/kakao로 요청을 보내면 new KakaoStrategy를 통해서 ClientID를 담아 카카오 서버로 인증을 요청.
+인증이 성공하면 /kakao/auth으로 응답이 온다. (accessToken, refreshToken, profile)
   
