@@ -1,0 +1,575 @@
+﻿-- 테이블 순서는 관계를 고려하여 한 번에 실행해도 에러가 발생하지 않게 정렬되었습니다.
+
+-- SiDo Table Create SQL
+CREATE TABLE SiDo
+(
+    `siDoId`     INT            NOT NULL    AUTO_INCREMENT COMMENT '주소 인덱스', 
+    `status`     VARCHAR(1)     NOT NULL    DEFAULT 'Y' COMMENT 'D: 주소 삭제', 
+    `createdAt`  TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`  TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    `sidoName`   VARCHAR(45)    NOT NULL    COMMENT '시도 이름', 
+    `sidoCode`   INT            NOT NULL    COMMENT '행정구역 코드', 
+    CONSTRAINT PK_SiDo PRIMARY KEY (siDoId)
+);
+
+ALTER TABLE SiDo COMMENT '시/도 행정구역';
+
+
+-- User Table Create SQL
+CREATE TABLE User
+(
+    `userId`       INT            NOT NULL    AUTO_INCREMENT COMMENT '회원 인덱스', 
+    `status`       VARCHAR(1)     NOT NULL    DEFAULT 'Y' COMMENT 'Y : 활동, D: 탈퇴, N: 휴면', 
+    `createdAt`    TIMESTAMP      NOT NULL    DEFAULT current_timestamp COMMENT '회원 생성시간', 
+    `updatedAt`    TIMESTAMP      NOT NULL    DEFAULT current_timestamp COMMENT '회원 수정시간', 
+    `userEmail`    VARCHAR(45)    NOT NULL    COMMENT '회원 이메일', 
+    `password`     text           NOT NULL    COMMENT '보안을 위해 hash값 저장', 
+    `phoneNumber`  VARCHAR(11)    NOT NULL    COMMENT '회원 전화번호', 
+    `userName`     VARCHAR(6)     NOT NULL    COMMENT '회원 이름(실명)', 
+    CONSTRAINT PK_User PRIMARY KEY (userId)
+);
+
+ALTER TABLE User COMMENT '회원 테이블';
+
+
+-- SiGunGu Table Create SQL
+CREATE TABLE SiGunGu
+(
+    `sidoId`       INT            NOT NULL    COMMENT '시도 인덱스', 
+    `siGunGuId`    INT            NOT NULL    AUTO_INCREMENT COMMENT '시군구 인덱스', 
+    `status`       VARCHAR(1)     NOT NULL    DEFAULT 'Y' COMMENT 'D: 주소 삭제', 
+    `createdAt`    TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`    TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    `sigunguName`  VARCHAR(45)    NOT NULL    COMMENT '시군구 이름', 
+    `sigunguCode`  INT            NOT NULL    COMMENT '행정구역 코드', 
+    CONSTRAINT PK_SiGunGu PRIMARY KEY (siGunGuId)
+);
+
+ALTER TABLE SiGunGu COMMENT '시/군/구 행정구역';
+
+ALTER TABLE SiGunGu
+    ADD CONSTRAINT FK_SiGunGu_sidoId_SiDo_siDoId FOREIGN KEY (sidoId)
+        REFERENCES SiDo (siDoId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- Card Table Create SQL
+CREATE TABLE Card
+(
+    `cardId`        INT            NOT NULL    AUTO_INCREMENT COMMENT '카드 결제 인덱스', 
+    `userId`        INT            NOT NULL    COMMENT '회원 인덱스', 
+    `cardNumber`    TEXT           NOT NULL    COMMENT '보안을 위해 hash값 저장', 
+    `cardValidity`  DATE           NOT NULL    COMMENT '유효기간', 
+    `status`        VARCHAR(1)     NOT NULL    DEFAULT 'Y' COMMENT 'D : 삭제', 
+    `createdAt`     TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`     TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    `cardName`      VARCHAR(45)    NOT NULL    COMMENT '카트명', 
+    CONSTRAINT PK_Card PRIMARY KEY (cardId)
+);
+
+ALTER TABLE Card COMMENT '신용/체크카드 결제 수단';
+
+ALTER TABLE Card
+    ADD CONSTRAINT FK_Card_userId_User_userId FOREIGN KEY (userId)
+        REFERENCES User (userId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- Account Table Create SQL
+CREATE TABLE Account
+(
+    `accountId`      INT            NOT NULL    AUTO_INCREMENT COMMENT '계좌 인덱스', 
+    `userId`         INT            NOT NULL    COMMENT '회원 인덱스', 
+    `bankName`       VARCHAR(45)    NOT NULL    COMMENT '은행', 
+    `accountNumber`  VARCHAR(45)    NOT NULL    COMMENT '계좌번호', 
+    `status`         VARCHAR(1)     NOT NULL    DEFAULT 'Y' COMMENT 'D : 삭제', 
+    `createdAt`      TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`      TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    CONSTRAINT PK_Account PRIMARY KEY (accountId)
+);
+
+ALTER TABLE Account COMMENT '계좌 정보';
+
+ALTER TABLE Account
+    ADD CONSTRAINT FK_Account_userId_User_userId FOREIGN KEY (userId)
+        REFERENCES User (userId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- EupMyeonDong Table Create SQL
+CREATE TABLE EupMyeonDong
+(
+    `siGunGuId`         INT            NOT NULL    COMMENT '시군구 인덱스', 
+    `eupMyeonDongId`    INT            NOT NULL    AUTO_INCREMENT COMMENT '읍면동 인덱스', 
+    `status`            VARCHAR(1)     NOT NULL    DEFAULT 'Y' COMMENT 'D: 주소 삭제', 
+    `createdAt`         TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`         TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    `eupMyeonDongName`  VARCHAR(45)    NOT NULL    COMMENT '읍면동 이름', 
+    `eupMyeonDongCode`  INT            NOT NULL    COMMENT '행정구역 코드', 
+    CONSTRAINT PK_EupMyeonDong PRIMARY KEY (eupMyeonDongId)
+);
+
+ALTER TABLE EupMyeonDong COMMENT '읍/면/동 행정구역';
+
+ALTER TABLE EupMyeonDong
+    ADD CONSTRAINT FK_EupMyeonDong_siGunGuId_SiGunGu_siGunGuId FOREIGN KEY (siGunGuId)
+        REFERENCES SiGunGu (siGunGuId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- Restaurant Table Create SQL
+CREATE TABLE Restaurant
+(
+    `restId`              INT               NOT NULL    AUTO_INCREMENT COMMENT '식당 인덱스', 
+    `restName`            VARCHAR(45)       NOT NULL    COMMENT '식당 이름', 
+    `restPhoneNumber`     VARCHAR(30)       NOT NULL    COMMENT '식당 전화번호', 
+    `eupMyeonDongId`      INT               NOT NULL    COMMENT '읍면동 인덱스', 
+    `detailAddress`       VARCHAR(50)       NOT NULL    COMMENT '상세주소', 
+    `restLongitude`       decimal(18,10)    NOT NULL    COMMENT '식당 주소 경도', 
+    `restLatitude`        decimal(18,10)    NOT NULL    COMMENT '식당 주소 위도', 
+    `managerName`         VARCHAR(10)       NOT NULL    COMMENT '대표자명', 
+    `registrationNumber`  VARCHAR(20)       NOT NULL    COMMENT '사업자등록번호', 
+    `businessName`        VARCHAR(30)       NOT NULL    COMMENT '상호명', 
+    `operationHour`       VARCHAR(100)      NOT NULL    COMMENT '영업시간', 
+    `restIntroduction`    VARCHAR(200)      NOT NULL    COMMENT '매장소개', 
+    `originInfo`          TEXT              NOT NULL    COMMENT '원산지 정보', 
+    `deliveryFee`         VARCHAR(10)       NOT NULL    DEFAULT '무료' COMMENT '배달비', 
+    `minimumAmount`       VARCHAR(10)       NOT NULL    COMMENT '최소주문금액', 
+    `notice`              TEXT              NULL        COMMENT '식당 공지사항', 
+    `allergyInfo`         TEXT              NULL        COMMENT '알레르기 유발성분', 
+    `nutritionInfo`       TEXT              NULL        COMMENT '영양성분 정보', 
+    `Cheetah`             VARCHAR(1)        NOT NULL    DEFAULT 'N' COMMENT 'Y : 치타배달 매장 N : x', 
+    `status`              VARCHAR(1)        NOT NULL    DEFAULT 'Y' COMMENT 'D : 삭제', 
+    `createdAt`           TIMESTAMP         NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`           TIMESTAMP         NOT NULL    DEFAULT current_timestamp, 
+    `repRestImageUrl`     TEXT              NOT NULL    COMMENT '홈화면 식당 대표이미지', 
+    `restIconUrl`         TEXT              NULL        COMMENT '프랜차이즈나 유명 식당은 아이콘 존재', 
+    CONSTRAINT PK_Restaurant PRIMARY KEY (restId)
+);
+
+ALTER TABLE Restaurant COMMENT '식당 테이블';
+
+
+-- Coupon Table Create SQL
+CREATE TABLE Coupon
+(
+    `couponId`        INT            NOT NULL    AUTO_INCREMENT COMMENT '쿠폰 인덱스', 
+    `status`          VARCHAR(1)     NOT NULL    DEFAULT 'Y' COMMENT 'Y : 유효 N: 소멸', 
+    `createdAt`       TIMESTAMP      NOT NULL    DEFAULT current_timestamp COMMENT '쿠폰 생성시간', 
+    `updatedAt`       TIMESTAMP      NOT NULL    DEFAULT current_timestamp COMMENT '쿠폰 수정시간', 
+    `couponName`      VARCHAR(45)    NOT NULL    COMMENT 'ex) 3000원 할인', 
+    `couponValidity`  INT            NOT NULL    COMMENT '하루 단위로 나타냄, 사용자 쿠폰 등록시간에 이 기간을 더함', 
+    `couponCode`      varchar(16)    NOT NULL    COMMENT '8자리 or 16자리', 
+    `restId`          INT            NOT NULL    COMMENT '쿠폰 적용 식당', 
+    CONSTRAINT PK_Coupon PRIMARY KEY (couponId)
+);
+
+
+-- UserAddress Table Create SQL
+CREATE TABLE UserAddress
+(
+    `userAddressId`    INT               NOT NULL    AUTO_INCREMENT COMMENT '회원 주소 인덱스', 
+    `userId`           INT               NOT NULL    COMMENT '회원 인덱스', 
+    `eupMyeonDongId`   INT               NOT NULL    COMMENT '읍면동 인덱스', 
+    `detailAddress`    VARCHAR(50)       NULL        COMMENT '상세주소 생략 가능', 
+    `addressCategory`  VARCHAR(10)       NOT NULL    DEFAULT 'etc' COMMENT 'company : 회사 home: 집 etc : 기타', 
+    `userLongitude`    decimal(18,10)    NOT NULL    COMMENT '주소 경도', 
+    `userLatitude`     decimal(18,10)    NOT NULL    COMMENT '주소 위도', 
+    `status`           VARCHAR(1)        NOT NULL    DEFAULT 'Y' COMMENT 'D : 삭제', 
+    `createdAt`        TIMESTAMP         NOT NULL    DEFAULT current_timestamp COMMENT '주소 입력시간', 
+    `updatedAt`        TIMESTAMP         NOT NULL    DEFAULT current_timestamp COMMENT '주소 수정시간', 
+    `introduction`     varchar(100)      NULL        COMMENT '길안내', 
+    CONSTRAINT PK_UserAddress PRIMARY KEY (userAddressId)
+);
+
+ALTER TABLE UserAddress COMMENT '대략주소에 상세주소 추가, 유저당 여러개의 주소 가능';
+
+ALTER TABLE UserAddress
+    ADD CONSTRAINT FK_UserAddress_userId_User_userId FOREIGN KEY (userId)
+        REFERENCES User (userId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE UserAddress
+    ADD CONSTRAINT FK_UserAddress_eupMyeonDongId_EupMyeonDong_eupMyeonDongId FOREIGN KEY (eupMyeonDongId)
+        REFERENCES EupMyeonDong (eupMyeonDongId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- UserCoupon Table Create SQL
+CREATE TABLE UserCoupon
+(
+    `couponId`      INT           NOT NULL    COMMENT '쿠폰 인덱스', 
+    `userId`        INT           NOT NULL    COMMENT '회원 인덱스', 
+    `createdAt`     TIMESTAMP     NOT NULL    DEFAULT current_timestamp COMMENT '쿠폰 등록 시간', 
+    `status`        VARCHAR(1)    NOT NULL    DEFAULT 'N' COMMENT 'N: 미사용 Y: 사용', 
+    `userCouponId`  INT           NOT NULL    AUTO_INCREMENT COMMENT '유저 쿠폰 인덱스', 
+    CONSTRAINT PK_UserCoupon PRIMARY KEY (userCouponId)
+);
+
+ALTER TABLE UserCoupon COMMENT '쿠폰 소멸 시간 계산은 쿼리에서  진행';
+
+ALTER TABLE UserCoupon
+    ADD CONSTRAINT FK_UserCoupon_couponId_Coupon_couponId FOREIGN KEY (couponId)
+        REFERENCES Coupon (couponId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE UserCoupon
+    ADD CONSTRAINT FK_UserCoupon_userId_User_userId FOREIGN KEY (userId)
+        REFERENCES User (userId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- RepPayment Table Create SQL
+CREATE TABLE RepPayment
+(
+    `repPaymentId`  INT           NOT NULL    AUTO_INCREMENT COMMENT '대표 결제수단 인덱스', 
+    `userId`        INT           NOT NULL    COMMENT '회원 인덱스', 
+    `cardId`        INT           NULL        COMMENT '카드 인덱스', 
+    `accountId`     INT           NULL        COMMENT '계좌 인덱스', 
+    `status`        VARCHAR(1)    NOT NULL    DEFAULT 'Y' COMMENT 'D : 삭제', 
+    `createdAt`     TIMESTAMP     NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`     TIMESTAMP     NOT NULL    DEFAULT current_timestamp, 
+    CONSTRAINT PK_RepPayment PRIMARY KEY (repPaymentId)
+);
+
+ALTER TABLE RepPayment COMMENT '대표 결제수단';
+
+ALTER TABLE RepPayment
+    ADD CONSTRAINT FK_RepPayment_userId_User_userId FOREIGN KEY (userId)
+        REFERENCES User (userId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE RepPayment
+    ADD CONSTRAINT FK_RepPayment_cardId_Card_cardId FOREIGN KEY (cardId)
+        REFERENCES Card (cardId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE RepPayment
+    ADD CONSTRAINT FK_RepPayment_accountId_Account_accountId FOREIGN KEY (accountId)
+        REFERENCES Account (accountId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- Menu Table Create SQL
+CREATE TABLE Menu
+(
+    `menuId`           INT             NOT NULL    AUTO_INCREMENT COMMENT '메뉴 인덱스', 
+    `restId`           INT             NOT NULL    COMMENT '식당 인덱스', 
+    `menuName`         VARCHAR(45)     NOT NULL    COMMENT '메뉴 이름', 
+    `subMenuCategory`  VARCHAR(45)     NOT NULL    COMMENT 'ex)세트메뉴, 사이드메뉴, 음료, 사리류', 
+    `menuPrice`        INT             NOT NULL    COMMENT '메뉴 가격', 
+    `menuImageUrl`     TEXT            NULL        COMMENT '메뉴 이미지 없는 것도 가능', 
+    `menuInfo`         VARCHAR(500)    NULL        COMMENT '세트메뉴의 경우 이름 자체가 소개글', 
+    `status`           VARCHAR(1)      NOT NULL    DEFAULT 'Y' COMMENT 'D : 삭제', 
+    `createdAt`        TIMESTAMP       NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`        TIMESTAMP       NOT NULL    DEFAULT current_timestamp, 
+    CONSTRAINT PK_Menu PRIMARY KEY (menuId)
+);
+
+ALTER TABLE Menu COMMENT '메뉴';
+
+ALTER TABLE Menu
+    ADD CONSTRAINT FK_Menu_restId_Restaurant_restId FOREIGN KEY (restId)
+        REFERENCES Restaurant (restId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- AdditionalMenu Table Create SQL
+CREATE TABLE AdditionalMenu
+(
+    `additionalMenuId`        INT            NOT NULL    AUTO_INCREMENT COMMENT '추가메뉴 인덱스', 
+    `restId`                  INT            NOT NULL    COMMENT '식당 인덱스', 
+    `subMenuCategory`         VARCHAR(45)    NOT NULL    COMMENT '세부메뉴카테고리', 
+    `additionalMenuCategory`  VARCHAR(45)    NOT NULL    COMMENT '추가메뉴카테고리', 
+    `additionalMenuContents`  VARCHAR(45)    NOT NULL    COMMENT '추가메뉴 내용', 
+    `additionalMenuPrice`     INT            NOT NULL    COMMENT '추가메뉴 가격', 
+    `status`                  VARCHAR(1)     NOT NULL    DEFAULT 'Y' COMMENT 'D : 삭제', 
+    `createdAt`               TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`               TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    CONSTRAINT PK_AdditionalMenu PRIMARY KEY (additionalMenuId)
+);
+
+ALTER TABLE AdditionalMenu COMMENT '추가 메뉴';
+
+ALTER TABLE AdditionalMenu
+    ADD CONSTRAINT FK_AdditionalMenu_subMenuCategory_Menu_subMenuCategory FOREIGN KEY (subMenuCategory)
+        REFERENCES Menu (subMenuCategory) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE AdditionalMenu
+    ADD CONSTRAINT FK_AdditionalMenu_restId_Restaurant_restId FOREIGN KEY (restId)
+        REFERENCES Restaurant (restId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- Category Table Create SQL
+CREATE TABLE Category
+(
+    `categoryId`        INT            NOT NULL    AUTO_INCREMENT COMMENT '음식 카테고리 인덱스', 
+    `categoryName`      VARCHAR(45)    NOT NULL    COMMENT '음식 종류', 
+    `categoryImageUrl`  TEXT           NOT NULL    COMMENT '음식 아이콘', 
+    `status`            VARCHAR(1)     NOT NULL    DEFAULT 'Y' COMMENT 'D : 삭제', 
+    `createdAt`         TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`         TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    CONSTRAINT PK_FoodCategory PRIMARY KEY (categoryId)
+);
+
+ALTER TABLE Category COMMENT '식당 카테고리';
+
+
+-- Cart Table Create SQL
+CREATE TABLE Cart
+(
+    `cartId`         INT           NOT NULL    AUTO_INCREMENT COMMENT '카트 인덱스', 
+    `userId`         INT           NOT NULL    COMMENT '회원 인덱스', 
+    `restId`         INT           NOT NULL    COMMENT '식당 인덱스', 
+    `userAddressId`  INT           NOT NULL    COMMENT '회원 주소 인덱스', 
+    `status`         VARCHAR(1)    NOT NULL    DEFAULT 'Y' COMMENT 'D : 삭제', 
+    `createdAt`      TIMESTAMP     NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`      TIMESTAMP     NOT NULL    DEFAULT current_timestamp, 
+    `userCouponId`   INT           NULL        COMMENT '유저 쿠폰 인덱스', 
+    `Cheetah`        INT           NULL        COMMENT '대표 결제수단 인덱스', 
+    CONSTRAINT PK_Cart PRIMARY KEY (cartId)
+);
+
+ALTER TABLE Cart COMMENT '카트화면에서 결제창이 동시에 존재';
+
+ALTER TABLE Cart
+    ADD CONSTRAINT FK_Cart_userId_User_userId FOREIGN KEY (userId)
+        REFERENCES User (userId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE Cart
+    ADD CONSTRAINT FK_Cart_restId_Restaurant_restId FOREIGN KEY (restId)
+        REFERENCES Restaurant (restId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE Cart
+    ADD CONSTRAINT FK_Cart_userAddressId_UserAddress_userAddressId FOREIGN KEY (userAddressId)
+        REFERENCES UserAddress (userAddressId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE Cart
+    ADD CONSTRAINT FK_Cart_userCouponId_UserCoupon_userCouponId FOREIGN KEY (userCouponId)
+        REFERENCES UserCoupon (userCouponId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE Cart
+    ADD CONSTRAINT FK_Cart_Cheetah_RepPayment_repPaymentId FOREIGN KEY (Cheetah)
+        REFERENCES RepPayment (repPaymentId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- Review Table Create SQL
+CREATE TABLE Review
+(
+    `reviewId`        INT              NOT NULL    AUTO_INCREMENT COMMENT '리뷰 인덱스', 
+    `restId`          INT              NOT NULL    COMMENT '식당 인덱스', 
+    `menuId`          INT              NOT NULL    COMMENT '메뉴 인덱스', 
+    `userId`          INT              NOT NULL    COMMENT '회원 인덱스', 
+    `reviewContent`   VARCHAR(200)     NOT NULL    COMMENT '리뷰 내용', 
+    `reviewImageUrl`  TEXT             NULL        COMMENT '사진 있을 시=포토리뷰', 
+    `status`          VARCHAR(1)       NOT NULL    DEFAULT 'Y' COMMENT 'D: 삭제', 
+    `createdAt`       TIMESTAMP        NOT NULL    DEFAULT current_timestamp COMMENT '리뷰 작성시간', 
+    `updatedAt`       TIMESTAMP        NOT NULL    DEFAULT current_timestamp, 
+    `goodCount`       INT              NOT NULL    DEFAULT 0 COMMENT '좋아요 개수', 
+    `badCount`        INT              NOT NULL    DEFAULT 0 COMMENT '싫어요 개수', 
+    `star`            DECIMAL(2, 1)    NOT NULL    COMMENT '음식 별점', 
+    CONSTRAINT PK_Review PRIMARY KEY (reviewId)
+);
+
+ALTER TABLE Review COMMENT '리뷰';
+
+ALTER TABLE Review
+    ADD CONSTRAINT FK_Review_menuId_Menu_menuId FOREIGN KEY (menuId)
+        REFERENCES Menu (menuId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE Review
+    ADD CONSTRAINT FK_Review_restId_Restaurant_restId FOREIGN KEY (restId)
+        REFERENCES Restaurant (restId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE Review
+    ADD CONSTRAINT FK_Review_userId_User_userId FOREIGN KEY (userId)
+        REFERENCES User (userId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- Bookmarks Table Create SQL
+CREATE TABLE Bookmarks
+(
+    `userId`     INT           NOT NULL    COMMENT '회원 인덱스', 
+    `restId`     INT           NOT NULL    COMMENT '식당 인덱스', 
+    `createdAt`  TIMESTAMP     NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`  TIMESTAMP     NOT NULL    DEFAULT current_timestamp, 
+    `status`     VARCHAR(1)    NOT NULL    DEFAULT 'Y' COMMENT 'D : 즐겨찾기 삭제'
+);
+
+ALTER TABLE Bookmarks COMMENT '즐겨찾기';
+
+ALTER TABLE Bookmarks
+    ADD CONSTRAINT FK_Bookmarks_userId_User_userId FOREIGN KEY (userId)
+        REFERENCES User (userId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE Bookmarks
+    ADD CONSTRAINT FK_Bookmarks_restId_Restaurant_restId FOREIGN KEY (restId)
+        REFERENCES Restaurant (restId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- SearchRecord Table Create SQL
+CREATE TABLE SearchRecord
+(
+    `searchId`       INT            NOT NULL    AUTO_INCREMENT COMMENT '검색 인덱스', 
+    `userId`         INT            NOT NULL    COMMENT '회원 인덱스', 
+    `status`         VARCHAR(1)     NOT NULL    DEFAULT 'Y', 
+    `createdAt`      TIMESTAMP      NOT NULL    DEFAULT current_timestamp COMMENT '검색 시간', 
+    `updatedAt`      TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    `searchContent`  VARCHAR(45)    NOT NULL    COMMENT '검색 내용', 
+    CONSTRAINT PK_SearchRecord PRIMARY KEY (searchId)
+);
+
+ALTER TABLE SearchRecord COMMENT '최근 검색어, 인기 검색어를 위한 테이블';
+
+ALTER TABLE SearchRecord
+    ADD CONSTRAINT FK_SearchRecord_userId_User_userId FOREIGN KEY (userId)
+        REFERENCES User (userId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- MenuPerCart Table Create SQL
+CREATE TABLE MenuPerCart
+(
+    `cartId`     INT           NOT NULL    COMMENT '카트 인덱스', 
+    `menuId`     INT           NOT NULL    COMMENT '메뉴 인덱스', 
+    `status`     VARCHAR(1)    NOT NULL    DEFAULT 'Y' COMMENT 'D: 카트 담기 취소', 
+    `createdAt`  TIMESTAMP     NOT NULL    DEFAULT current_timestamp COMMENT '카트에 메뉴 담은 시간', 
+    `updatedAt`  TIMESTAMP     NOT NULL    DEFAULT current_timestamp COMMENT '수정 시간', 
+    `menuCount`  INT           NOT NULL    DEFAULT 1 COMMENT '메뉴 당 개수'
+);
+
+ALTER TABLE MenuPerCart COMMENT '카트 당 담긴 메뉴';
+
+ALTER TABLE MenuPerCart
+    ADD CONSTRAINT FK_MenuPerCart_cartId_Cart_cartId FOREIGN KEY (cartId)
+        REFERENCES Cart (cartId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE MenuPerCart
+    ADD CONSTRAINT FK_MenuPerCart_menuId_Menu_menuId FOREIGN KEY (menuId)
+        REFERENCES Menu (menuId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- RestaurantImage Table Create SQL
+CREATE TABLE RestaurantImage
+(
+    `restId`        INT           NOT NULL    COMMENT '식당 인덱스', 
+    `restImageUrl`  LONGTEXT      NOT NULL    COMMENT '여러개 가능', 
+    `status`        VARCHAR(1)    NOT NULL    DEFAULT 'Y', 
+    `createdAt`     TIMESTAMP     NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`     TIMESTAMP     NOT NULL    DEFAULT current_timestamp
+);
+
+ALTER TABLE RestaurantImage COMMENT '식당 대표 이미지';
+
+ALTER TABLE RestaurantImage
+    ADD CONSTRAINT FK_RestaurantImage_restId_Restaurant_restId FOREIGN KEY (restId, restImageUrl)
+        REFERENCES Restaurant (restId, repRestImageUrl) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- Event Table Create SQL
+CREATE TABLE Event
+(
+    `eventId`        INT           NOT NULL    AUTO_INCREMENT COMMENT '이벤트 인덱스', 
+    `eventImageUrl`  LONGTEXT      NOT NULL    COMMENT '이벤트 이미지', 
+    `status`         VARCHAR(1)    NOT NULL    DEFAULT 'Y' COMMENT 'D: 삭제', 
+    `createdAt`      TIMESTAMP     NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`      TIMESTAMP     NOT NULL    DEFAULT current_timestamp, 
+    CONSTRAINT PK_Event PRIMARY KEY (eventId)
+);
+
+ALTER TABLE Event COMMENT '이벤트';
+
+
+-- ReviewReply Table Create SQL
+CREATE TABLE ReviewReply
+(
+    `reviewId`      INT             NOT NULL    COMMENT '리뷰 인덱스', 
+    `createdAt`     TIMESTAMP       NOT NULL    DEFAULT current_timestamp COMMENT '답글 작성시간', 
+    `updatedAt`     TIMESTAMP       NOT NULL    DEFAULT current_timestamp, 
+    `status`        VARCHAR(1)      NOT NULL    DEFAULT 'Y' COMMENT 'D: 삭제', 
+    `replyContent`  VARCHAR(200)    NOT NULL    COMMENT '답글 내용'
+);
+
+ALTER TABLE ReviewReply COMMENT '리뷰에 달린 식당 사장님 답글';
+
+ALTER TABLE ReviewReply
+    ADD CONSTRAINT FK_ReviewReply_reviewId_Review_reviewId FOREIGN KEY (reviewId)
+        REFERENCES Review (reviewId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- CategoryPerRest Table Create SQL
+CREATE TABLE CategoryPerRest
+(
+    `restId`      INT           NOT NULL    COMMENT '식당 인덱스', 
+    `categoryId`  INT           NOT NULL    COMMENT '카테고리 인덱스', 
+    `status`      VARCHAR(1)    NOT NULL    DEFAULT 'Y' COMMENT 'D : 삭제', 
+    `createdAt`   TIMESTAMP     NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`   TIMESTAMP     NOT NULL    DEFAULT current_timestamp
+);
+
+ALTER TABLE CategoryPerRest COMMENT '한 식당에 여러개의 카테고리 존재. ex) 1인분, 샌드위치';
+
+ALTER TABLE CategoryPerRest
+    ADD CONSTRAINT FK_CategoryPerRest_restId_Restaurant_restId FOREIGN KEY (restId)
+        REFERENCES Restaurant (restId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE CategoryPerRest
+    ADD CONSTRAINT FK_CategoryPerRest_categoryId_Category_categoryId FOREIGN KEY (categoryId)
+        REFERENCES Category (categoryId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- Order Table Create SQL
+CREATE TABLE Order
+(
+    `orderId`          INT            NOT NULL    AUTO_INCREMENT COMMENT '주문 인덱스', 
+    `cartId`           INT            NOT NULL    COMMENT '카트 인덱스', 
+    `status`           VARCHAR(1)     NOT NULL    DEFAULT 'Y' COMMENT 'D : 삭제', 
+    `createdAt`        TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`        TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
+    `reqManager`       VARCHAR(50)    NULL        COMMENT '가게 사장님에게', 
+    `reqDelivery`      VARCHAR(50)    NULL        COMMENT '배달 기사님에게', 
+    `disposableCheck`  VARCHAR(1)     NOT NULL    DEFAULT 'N' COMMENT '일회용품 받기 체크', 
+    `userCouponId`     INT            NULL        COMMENT '유저 쿠폰 인덱스', 
+    `totalPayPrice`    INT            NOT NULL    COMMENT '총 결제 금액', 
+    CONSTRAINT PK_Order PRIMARY KEY (orderId)
+);
+
+ALTER TABLE Order COMMENT '주문 테이블 = 결제를 진행한 카트의 정보를 담음';
+
+ALTER TABLE Order
+    ADD CONSTRAINT FK_Order_cartId_Cart_cartId FOREIGN KEY (cartId)
+        REFERENCES Cart (cartId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- DefaultAddress Table Create SQL
+CREATE TABLE DefaultAddress
+(
+    `userId`         INT           NOT NULL    COMMENT '회원 인덱스', 
+    `userAddressId`  INT           NOT NULL    COMMENT '회원 주소 인덱스', 
+    `status`         VARCHAR(1)    NOT NULL    DEFAULT 'Y' COMMENT 'D: 주소 삭제', 
+    `createdAt`      TIMESTAMP     NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`      TIMESTAMP     NOT NULL    DEFAULT current_timestamp
+);
+
+ALTER TABLE DefaultAddress COMMENT '홈화면에서 설정한 기본 주소';
+
+ALTER TABLE DefaultAddress
+    ADD CONSTRAINT FK_DefaultAddress_userId_User_userId FOREIGN KEY (userId)
+        REFERENCES User (userId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE DefaultAddress
+    ADD CONSTRAINT FK_DefaultAddress_userAddressId_UserAddress_userAddressId FOREIGN KEY (userAddressId)
+        REFERENCES UserAddress (userAddressId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- AdditionalMenuPerCart Table Create SQL
+CREATE TABLE AdditionalMenuPerCart
+(
+    `cartId`            INT           NOT NULL    COMMENT '카트 인덱스', 
+    `menuId`            INT           NOT NULL    COMMENT '메뉴 당 총 가격을 위함', 
+    `additionalMenuId`  INT           NOT NULL    COMMENT '추가 메뉴 인덱스', 
+    `status`            VARCHAR(1)    NOT NULL    DEFAULT 'Y' COMMENT 'D: 카트 담기 취소', 
+    `createdAt`         TIMESTAMP     NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`         TIMESTAMP     NOT NULL    DEFAULT current_timestamp
+);
+
+ALTER TABLE AdditionalMenuPerCart
+    ADD CONSTRAINT FK_AdditionalMenuPerCart_cartId_Cart_cartId FOREIGN KEY (cartId)
+        REFERENCES Cart (cartId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE AdditionalMenuPerCart
+    ADD CONSTRAINT FK_AdditionalMenuPerCart_menuId_Menu_menuId FOREIGN KEY (menuId)
+        REFERENCES Menu (menuId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE AdditionalMenuPerCart
+    ADD CONSTRAINT FK_AdditionalMenuPerCart_additionalMenuId_AdditionalMenu_additio FOREIGN KEY (additionalMenuId)
+        REFERENCES AdditionalMenu (additionalMenuId) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
