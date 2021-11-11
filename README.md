@@ -1,7 +1,8 @@
 #ERD 링크
 URL : https://aquerytool.com/aquerymain/index/?rurl=92722557-f92e-4887-88f6-0eb583001f02&
 Password : 1t27pd
-
+----------------------
+Aquerytool 유로화로 인해, 다른 tool 찾는 중
 #개발일지
 
 ## 2021-07-31 진행상황
